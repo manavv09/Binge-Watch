@@ -49,8 +49,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
     <nav className={`navbar ${isScrolled ? 'scrolled glass-panel' : ''}`}>
       <div className="container nav-container">
         <div className="nav-brand" onClick={() => setActiveCategory('all')}>
-          <Film className="brand-icon" />
-          <span className="brand-text text-gradient">BingeWatch</span>
+          <img src="/logo.jpg" alt="Binge Watcher" style={{ height: '40px', objectFit: 'contain' }} />
         </div>
 
         {/* Desktop Navigation */}
