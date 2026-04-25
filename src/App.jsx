@@ -141,7 +141,7 @@ function App() {
   }, [activeCategory, searchQuery, page, currentUser]);
 
   return (
-    <div className="app-container">
+    <div className="min-h-screen bg-bg-base text-text-primary font-sans">
       <Navbar 
         activeCategory={activeCategory} 
         setActiveCategory={(cat) => {

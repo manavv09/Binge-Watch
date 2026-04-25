@@ -1,53 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap');
 
-:root {
-  /* Color Palette - StatsCrave Slate Theme */
-  --bg-base: #030712;
-  --bg-surface: rgba(15, 23, 42, 0.7);
-  --bg-surface-hover: rgba(30, 41, 59, 0.9);
-  --bg-surface-active: rgba(51, 65, 85, 0.95);
-  
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  
-  --accent-primary: #3b82f6; /* Blue */
-  --accent-secondary: #8b5cf6; /* Violet */
-  --accent-glow: rgba(59, 130, 246, 0.4);
-  
-  --danger: #ef4444;
-  --success: #10b981;
-  --warning: #f59e0b;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Sleek Flat Shadows & Borders */
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --volumetric-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+@layer base {
+  body {
+    @apply font-sans bg-bg-base text-text-primary min-h-screen overflow-x-hidden antialiased relative;
+  }
   
-  /* Layout */
-  --nav-height: 80px;
-  --max-width: 1400px;
-  
-  /* Animations */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg-base);
-  color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  position: relative;
+  h1, h2, h3, h4, h5, h6, .heading {
+    @apply font-sans font-bold tracking-tight;
+  }
 }
 
 body::before {
@@ -73,105 +37,34 @@ body::before {
   100% { transform: scale(1.05) rotate(-2deg); }
 }
 
-h1, h2, h3, h4, h5, h6, .heading {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-base);
+  @apply bg-bg-base;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-primary);
-  border-radius: 10px;
-  box-shadow: 0 0 10px var(--accent-glow);
+  @apply bg-accent-primary rounded-full;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-secondary);
+  @apply bg-accent-secondary;
 }
 
-/* Utilities */
-.glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 24px;
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.container {
-  width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-@media (max-width: 768px) {
+@layer components {
+  /* Reusable container */
   .container {
-    padding: 0 1rem;
+    @apply w-full max-w-container mx-auto px-4 md:px-8;
   }
-}
 
-/* Base button styles */
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  color: inherit;
-}
+  /* Base button reset */
+  button {
+    @apply cursor-pointer border-none bg-transparent font-sans text-inherit;
+  }
 
-.btn-primary {
-  background: var(--text-primary);
-  color: var(--bg-base);
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  transition: all var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: none;
-}
-
-.btn-primary:hover {
-  background: #e2e8f0;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
-}
-
-.btn-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-surface);
-  border: 1px solid var(--glass-border);
-  transition: all var(--transition-fast);
-}
-
-.btn-icon:hover {
-  background: var(--bg-surface-hover);
-  transform: translateY(-2px);
-}
-
-input, textarea {
-  font-family: inherit;
+  input, textarea {
+    @apply font-sans;
+  }
 }
