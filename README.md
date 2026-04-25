@@ -1,6 +1,6 @@
-# 🎬 StatsCrave — Ultimate Media Hub
+# 🎬 BingeWatch — Ultimate Media Hub
 
-StatsCrave is a premium, high-performance web application designed for movie enthusiasts, anime fans, and binge-watchers. It provides a sleek, minimalist "StatsCrave" aesthetic with a deep-slate glassmorphic UI, real-time data fetching, and seamless external integrations.
+BingeWatch is a premium, high-performance web application designed for movie enthusiasts, anime fans, and binge-watchers. It provides a sleek, minimalist "BingeWatch" aesthetic with a deep-slate glassmorphic UI, real-time data fetching, and seamless external integrations.
 
 ![Hero Showcase](https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop)
 
@@ -21,7 +21,7 @@ StatsCrave is a premium, high-performance web application designed for movie ent
 - **Interactive Ratings:** Rate titles and leave comments to share your thoughts.
 
 ### 💎 Premium Design
-- **StatsCrave Aesthetic:** A flat, modern UI with high border-radii, glassmorphic surfaces, and a curated Slate color palette.
+- **BingeWatch Aesthetic:** A flat, modern UI with high border-radii, glassmorphic surfaces, and a curated Slate color palette.
 - **Framer Motion Animations:** Fluid transitions, spring-loaded modals, and breathing background effects.
 - **Responsive Layout:** Optimized for everything from mobile phones to ultra-wide monitors.
 
