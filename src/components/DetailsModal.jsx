@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { X, Star, MessageSquare, Send, Bookmark, BookmarkCheck } from 'lucide-react';
+import { X, Star, MessageSquare, Send, Bookmark, BookmarkCheck, Ticket } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getTMDBDetails, getAnimeDetails } from '../utils/api';
 import { addToWatchlist, removeFromWatchlist, getWatchlist } from '../utils/firestore';
-import './DetailsModal.css';
+import BookingPartnersModal from './BookingPartnersModal';
+
+// A movie is bookable if it's a movie (not anime/tv) and release date is within 90 days from today
+const isMovieBookable = (item, details) => {
+  if (!item || item.mal_id) return false; // exclude anime
+  const mediaType = details?.media_type || item?.media_type || (item?.first_air_date ? 'tv' : 'movie');
+  if (mediaType === 'tv') return false;
+  const releaseDate = details?.release_date || item?.release_date;
+  if (!releaseDate) return false;
+  const release = new Date(releaseDate);
+  const now = new Date();
+  const ninetyDaysAgo = new Date(now);
+  ninetyDaysAgo.setDate(now.getDate() - 90);
+  const ninetyDaysAhead = new Date(now);
+  ninetyDaysAhead.setDate(now.getDate() + 90);
+  return release >= ninetyDaysAgo && release <= ninetyDaysAhead;
+};
 
 const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   const [details, setDetails] = useState(null);
@@ -15,6 +31,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
 
   const id = item?.id || item?.mal_id;
   const isAnime = !!item?.mal_id;
@@ -133,65 +150,81 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   }
 
   return (
+    <>
     <AnimatePresence>
-      <div className="modal-overlay" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[2000] flex items-center justify-center md:p-4" onClick={onClose}>
         <motion.div 
-          className="modal-content glass-panel"
+          className="w-full h-full md:rounded-[24px] bg-bg-surface overflow-x-hidden overflow-y-auto relative flex flex-col backdrop-blur-md border border-glass-border shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]"
           initial={{ opacity: 0, y: 50, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.95 }}
           transition={{ duration: 0.3 }}
           onClick={e => e.stopPropagation()}
         >
-          <div className="modal-actions">
+          <div className="absolute top-4 right-4 z-10 flex gap-2">
             <button 
-              className={`watchlist-btn btn-icon ${isWatchlisted ? 'active' : ''}`} 
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-black/50 text-white border border-transparent hover:border-glass-border hover:-translate-y-0.5 ${isWatchlisted ? 'bg-indigo-500/20 !border-accent-primary' : ''}`} 
               onClick={handleWatchlistToggle}
               title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
             >
               {isWatchlisted ? <BookmarkCheck size={20} color="var(--accent-primary)" /> : <Bookmark size={20} />}
             </button>
-            <button className="modal-close btn-icon" onClick={onClose}>
+            <button className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-black/50 text-white border border-transparent hover:border-glass-border hover:-translate-y-0.5" onClick={onClose}>
               <X size={24} />
             </button>
           </div>
 
-          <div className="modal-header" style={{ backgroundImage: `url(${backdrop})` }}>
-            <div className="modal-header-overlay" />
+          <div className="w-full h-[50vh] min-h-[400px] bg-cover bg-center relative shrink-0" style={{ backgroundImage: `url(${backdrop})` }}>
+            <div className="absolute inset-0 bg-gradient-to-t from-bg-surface to-transparent" />
           </div>
 
-          <div className="modal-body">
-            <div className="modal-main-info">
-              <img src={poster} alt={title} className="modal-poster" />
-              <div className="modal-details">
-                <h2 className="modal-title">{title}</h2>
-                <div className="modal-meta">
-                  <span className="rating-badge">
+          <div className="p-4 md:p-16 max-w-[1400px] mx-auto w-full flex flex-col gap-8 -mt-[150px] relative z-10">
+            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+              <img src={poster} alt={title} className="w-[200px] md:w-[300px] h-[300px] md:h-[450px] rounded-xl object-cover shadow-volumetric border border-glass-border shrink-0 -mt-[150px] md:mt-0" />
+              <div className="grow">
+                <h2 className="text-[clamp(3rem,5vw,4.5rem)] mb-2 leading-[1.1] text-shadow-lg font-bold">{title}</h2>
+                <div className="flex items-center justify-center md:justify-start gap-4 mb-6 text-[0.95rem]">
+                  <span className="flex items-center gap-1 text-white">
                     <Star size={16} fill="var(--warning)" color="var(--warning)" />
                     {details?.vote_average ? Number(details.vote_average).toFixed(1) : (details?.score || 'N/A')}
                   </span>
-                  <span className="release-year">
+                  <span className="text-text-secondary">
                     {details?.release_date?.split('-')[0] || details?.first_air_date?.split('-')[0] || details?.year || ''}
                   </span>
-                  <span className="media-type-badge">
+                  <span className="bg-white/10 px-2.5 py-1 rounded text-xs tracking-widest">
                     {isAnime ? 'ANIME' : (details?.media_type || 'MEDIA').toUpperCase()}
                   </span>
                 </div>
                 
-                <p className="modal-overview">{loading ? 'Loading details...' : overview}</p>
+                <p className="text-[1.05rem] leading-relaxed text-text-secondary mb-6">{loading ? 'Loading details...' : overview}</p>
+
+                {/* Book Ticket Button */}
+                {isMovieBookable(item, details) && (
+                  <div className="mb-6">
+                    <button
+                      type="button"
+                      onClick={() => setShowBooking(true)}
+                      className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-semibold text-sm shadow-[0_0_24px_rgba(59,130,246,0.4)] hover:shadow-[0_0_32px_rgba(59,130,246,0.6)] hover:-translate-y-0.5 transition-all duration-200"
+                    >
+                      <Ticket size={18} />
+                      Book Tickets
+                    </button>
+                    <p className="mt-2 text-text-muted text-xs">Tickets available · ₹250/seat</p>
+                  </div>
+                )}
 
                 {cast.length > 0 && (
-                  <div className="cast-section">
-                    <h3>Top Cast</h3>
-                    <div className="cast-list">
+                  <div>
+                    <h3 className="mb-4 text-[1.2rem] font-bold">Top Cast</h3>
+                    <div className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                       {cast.map(person => (
-                        <div key={person.id} className="cast-item">
+                        <div key={person.id} className="flex flex-col items-center gap-2 w-[80px] shrink-0">
                           <img 
                             src={person.profile_path ? `https://image.tmdb.org/t/p/w185${person.profile_path}` : 'https://via.placeholder.com/185x185?text=NA'} 
                             alt={person.name} 
-                            className="cast-avatar" 
+                            className="w-[60px] h-[60px] rounded-full object-cover border-2 border-glass-border" 
                           />
-                          <span className="cast-name">{person.name}</span>
+                          <span className="text-[0.8rem] text-center text-text-secondary">{person.name}</span>
                         </div>
                       ))}
                     </div>
@@ -200,54 +233,63 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
               </div>
             </div>
 
-            <div className="interactive-section">
-              <div className="rating-section">
-                <h3>Rate this</h3>
-                <div className="star-rating">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      className={`star-btn ${star <= (hoverRating || userRating) ? 'active' : ''}`}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      onClick={() => handleRating(star)}
-                    >
-                      <Star size={32} fill={star <= (hoverRating || userRating) ? "var(--warning)" : "transparent"} color="var(--warning)" />
-                    </button>
-                  ))}
-                  <span className="rating-text">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 border-t border-glass-border pt-8">
+              <div>
+                <h3 className="mb-4 flex items-center gap-2 font-bold text-[1.2rem]">Rate this</h3>
+                <div className="flex flex-col gap-1">
+                  <div className="flex flex-row items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        className="p-1 transition-transform duration-150 hover:scale-110 inline-flex items-center justify-center"
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => handleRating(star)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                      >
+                        <Star
+                          size={32}
+                          fill={star <= (hoverRating || userRating) ? '#f59e0b' : 'none'}
+                          color="#f59e0b"
+                          strokeWidth={1.5}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                  <span className="text-[0.9rem] text-text-muted mt-2">
                     {userRating > 0 ? `You rated this ${userRating}/5` : 'Click to rate'}
                   </span>
                 </div>
               </div>
 
-              <div className="comments-section">
-                <h3><MessageSquare size={20} className="inline-icon" /> Comments</h3>
+              <div>
+                <h3 className="mb-4 flex items-center gap-2 font-bold text-[1.2rem]"><MessageSquare size={20} /> Comments</h3>
                 
-                <form className="comment-form" onSubmit={handleAddComment}>
+                <form className="flex gap-2 mb-6" onSubmit={handleAddComment}>
                   <input
                     type="text"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Share your thoughts..."
-                    className="comment-input"
+                    className="grow bg-black/40 border border-glass-border p-3 rounded-lg text-white focus:outline-none focus:border-accent-primary focus:shadow-[0_0_0_3px_var(--accent-glow)] focus:bg-black/60 transition-all"
                   />
-                  <button type="submit" className="btn-primary comment-submit" disabled={!comment.trim()}>
+                  <button type="submit" className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-3 rounded-lg font-semibold transition-all duration-150 hover:bg-slate-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,255,255,0.1)] border-none cursor-pointer disabled:opacity-50" disabled={!comment.trim()}>
                     <Send size={18} />
                   </button>
                 </form>
 
-                <div className="comments-list">
+                <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2">
                   {comments.length === 0 ? (
-                    <p className="no-comments">No comments yet. Be the first to share your thoughts!</p>
+                    <p className="text-text-muted italic text-[0.9rem]">No comments yet. Be the first to share your thoughts!</p>
                   ) : (
                     comments.map(c => (
-                      <div key={c.id} className="comment-card">
-                        <div className="comment-header">
-                          <span className="comment-user">{c.user}</span>
-                          <span className="comment-date">{c.date}</span>
+                      <div key={c.id} className="bg-white/5 p-4 rounded-lg border border-glass-border">
+                        <div className="flex justify-between mb-2 text-[0.85rem]">
+                          <span className="font-semibold text-accent-secondary">{c.user}</span>
+                          <span className="text-text-muted">{c.date}</span>
                         </div>
-                        <p className="comment-text">{c.text}</p>
+                        <p className="text-[0.95rem] leading-[1.4] text-text-primary">{c.text}</p>
                       </div>
                     ))
                   )}
@@ -258,6 +300,15 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
         </motion.div>
       </div>
     </AnimatePresence>
+
+    {/* Booking Partners Modal */}
+    {showBooking && (
+      <BookingPartnersModal
+        item={details || item}
+        onClose={() => setShowBooking(false)}
+      />
+    )}
+  </>
   );
 };
 

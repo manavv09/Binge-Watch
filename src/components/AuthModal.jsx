@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock } from 'lucide-react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider, githubProvider, appleProvider } from '../utils/firebase';
-import './AuthModal.css';
 
 const AuthModal = ({ onClose, onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -40,7 +39,6 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
     e.preventDefault();
     setError('');
     
-    // Prevent default submission if the demo keys are present
     if (auth.app.options.apiKey === 'demo-key') {
       setError('Firebase is in demo mode. Please configure your .env file with real Firebase credentials to use Authentication.');
       return;
@@ -64,40 +62,41 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
 
   return (
     <AnimatePresence>
-      <div className="auth-overlay" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[3000] flex items-center justify-center p-4" onClick={onClose}>
         <motion.div 
-          className="auth-modal glass-panel"
+          className="w-full max-w-[400px] bg-bg-surface rounded-[20px] p-10 relative text-center backdrop-blur-md border border-glass-border shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)]"
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className="auth-close btn-icon" onClick={onClose}>
+          <button className="absolute top-4 right-4 w-8 h-8 bg-white/5 border-none text-white rounded-full flex items-center justify-center transition-all duration-150 hover:-translate-y-0.5 hover:bg-white/10 cursor-pointer" onClick={onClose}>
             <X size={20} />
           </button>
           
-          <h2 className="auth-title heading">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
-          <p className="auth-subtitle">
+          <h2 className="text-3xl mb-2 text-text-primary font-bold tracking-tight">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+          <p className="text-text-secondary text-[0.95rem] mb-8">
             {isLogin ? 'Log in to access your watchlist and ratings.' : 'Sign up to start saving your favorite movies and series.'}
           </p>
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            {error && <div className="auth-error">{error}</div>}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {error && <div className="bg-red-500/10 text-danger p-3 rounded-lg text-[0.85rem] border border-red-500/20 mb-2 text-left">{error}</div>}
             
-            <div className="input-group">
-              <Mail className="input-icon" size={18} />
+            <div className="relative flex items-center">
+              <Mail className="absolute left-4 text-text-muted" size={18} />
               <input 
                 type="email" 
                 placeholder="Email Address" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full bg-black/40 border border-glass-border rounded-xl py-3 pr-4 pl-12 text-text-primary text-[0.95rem] transition-all duration-150 focus:outline-none focus:border-accent-primary focus:shadow-[0_0_0_3px_var(--accent-glow)] focus:bg-black/60"
               />
             </div>
             
-            <div className="input-group">
-              <Lock className="input-icon" size={18} />
+            <div className="relative flex items-center">
+              <Lock className="absolute left-4 text-text-muted" size={18} />
               <input 
                 type="password" 
                 placeholder="Password" 
@@ -105,21 +104,22 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength="6"
+                className="w-full bg-black/40 border border-glass-border rounded-xl py-3 pr-4 pl-12 text-text-primary text-[0.95rem] transition-all duration-150 focus:outline-none focus:border-accent-primary focus:shadow-[0_0_0_3px_var(--accent-glow)] focus:bg-black/60"
               />
             </div>
 
-            <button type="submit" className="btn-primary auth-submit" disabled={loading}>
+            <button type="submit" className="mt-4 p-3.5 rounded-xl text-base w-full inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base font-semibold transition-all duration-150 hover:bg-slate-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,255,255,0.1)] border-none cursor-pointer disabled:opacity-70" disabled={loading}>
               {loading ? 'Processing...' : (isLogin ? 'Log In' : 'Sign Up')}
             </button>
           </form>
 
-          <div className="auth-divider">
-            <span>or continue with</span>
+          <div className="relative my-6 text-center before:content-[''] before:absolute before:top-1/2 before:left-0 before:w-full before:h-[1px] before:bg-glass-border">
+            <span className="relative bg-bg-surface px-4 text-text-muted text-[0.85rem]">or continue with</span>
           </div>
 
-          <div className="oauth-buttons">
+          <div className="flex gap-4 justify-center">
             <button 
-              className="oauth-btn" 
+              className="flex items-center justify-center w-full p-3 rounded-xl bg-white/5 border border-glass-border text-text-primary transition-all duration-150 hover:bg-white/10 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-white/5 cursor-pointer" 
               onClick={() => handleOAuthSignIn(googleProvider)}
               disabled={loading}
               title="Continue with Google"
@@ -132,7 +132,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
               </svg>
             </button>
             <button 
-              className="oauth-btn" 
+              className="flex items-center justify-center w-full p-3 rounded-xl bg-white/5 border border-glass-border text-text-primary transition-all duration-150 hover:bg-white/10 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-white/5 cursor-pointer" 
               onClick={() => handleOAuthSignIn(githubProvider)}
               disabled={loading}
               title="Continue with GitHub"
@@ -142,20 +142,20 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
               </svg>
             </button>
             <button 
-              className="oauth-btn" 
+              className="flex items-center justify-center w-full p-3 rounded-xl bg-white/5 border border-glass-border text-text-primary transition-all duration-150 hover:bg-white/10 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:bg-white/5 cursor-pointer" 
               onClick={() => handleOAuthSignIn(appleProvider)}
               disabled={loading}
               title="Continue with Apple"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-                <path d="M16.51 16.32c-.52.75-1.04 1.48-1.6 2.28-.6.86-1.18 1.7-2.02 1.72s-1.16-.51-2.12-.51c-.96 0-1.31.5-2.12.52s-1.38-.82-2-1.7c-1.31-1.89-2.22-4.47-1.54-6.95.33-1.21.94-2.27 1.81-3.03.88-.77 1.93-1.21 3.01-1.23 1.03-.02 2.03.68 2.65.68.61 0 1.83-.84 3.05-.72 1.26.13 2.39.73 3.1 1.76-2.61 1.51-2.18 5.25.4 6.32-.61 1.48-1.31 2.89-2.62 4.86zM15.02 5.06c.64-.78 1.07-1.88.95-2.97-1.05.04-2.26.7-2.93 1.51-.59.7-.1.08 1.88.96 2.96 1.04-.04 2.16-.76 2.8-1.6.61-.75.1-1.42 1.85-.82 2.91z"/>
+                <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.54 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/>
               </svg>
             </button>
           </div>
 
-          <div className="auth-switch">
+          <div className="mt-6 text-[0.9rem] text-text-secondary">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <button className="switch-btn" onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+            <button className="text-accent-primary font-semibold hover:underline bg-transparent border-none cursor-pointer p-0" onClick={() => { setIsLogin(!isLogin); setError(''); }}>
               {isLogin ? 'Sign Up' : 'Log In'}
             </button>
           </div>
