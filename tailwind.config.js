@@ -8,26 +8,26 @@ export default {
     extend: {
       colors: {
         bg: {
-          base: '#030712',
-          surface: 'rgba(15, 23, 42, 0.7)',
-          'surface-hover': 'rgba(30, 41, 59, 0.9)',
-          'surface-active': 'rgba(51, 65, 85, 0.95)',
+          base: 'var(--bg-base)',
+          surface: 'var(--bg-surface)',
+          'surface-hover': 'var(--bg-surface-hover)',
+          'surface-active': 'var(--bg-surface-active)',
         },
         text: {
-          primary: '#ffffff',
-          secondary: '#94a3b8',
-          muted: '#64748b',
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
         },
         accent: {
-          primary: '#3b82f6',
-          secondary: '#8b5cf6',
-          glow: 'rgba(59, 130, 246, 0.4)',
+          primary: 'var(--accent-primary)',
+          secondary: 'var(--accent-secondary)',
+          glow: 'var(--accent-glow)',
         },
-        danger: '#ef4444',
-        success: '#10b981',
-        warning: '#f59e0b',
+        danger: 'var(--danger)',
+        success: 'var(--success)',
+        warning: 'var(--warning)',
         glass: {
-          border: 'rgba(255, 255, 255, 0.05)',
+          border: 'var(--glass-border)',
         }
       },
       fontFamily: {
