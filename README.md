@@ -79,4 +79,4 @@ npm run dev
 | ![Auth](./screenshots/auth.png) |
 
 ---
-Developed with ❤️ by [Manav Bharti](https://github.com/manavv09)
+Developed with ❤️ by [Manav R.Bharti](https://github.com/manavv09)
