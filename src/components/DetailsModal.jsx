@@ -152,9 +152,9 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   return (
     <>
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[2000] flex items-center justify-center md:p-4" onClick={onClose}>
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[2000] flex items-center justify-center md:p-4" onClick={onClose}>
         <motion.div 
-          className="w-full h-full md:rounded-[24px] bg-bg-surface overflow-x-hidden overflow-y-auto relative flex flex-col backdrop-blur-md border border-glass-border shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)]"
+          className="w-full h-full md:rounded-[24px] bg-bg-surface overflow-x-hidden overflow-y-auto relative flex flex-col backdrop-blur-md border border-glass-border shadow-2xl"
           initial={{ opacity: 0, y: 50, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -163,13 +163,13 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
         >
           <div className="absolute top-4 right-4 z-10 flex gap-2">
             <button 
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-black/50 text-white border border-transparent hover:border-glass-border hover:-translate-y-0.5 ${isWatchlisted ? 'bg-indigo-500/20 !border-accent-primary' : ''}`} 
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-bg-surface-active text-text-primary border border-glass-border hover:-translate-y-0.5 shadow-lg ${isWatchlisted ? 'bg-accent-primary/20 !border-accent-primary' : ''}`} 
               onClick={handleWatchlistToggle}
               title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
             >
               {isWatchlisted ? <BookmarkCheck size={20} color="var(--accent-primary)" /> : <Bookmark size={20} />}
             </button>
-            <button className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-black/50 text-white border border-transparent hover:border-glass-border hover:-translate-y-0.5" onClick={onClose}>
+            <button className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 bg-bg-surface-active text-text-primary border border-glass-border hover:-translate-y-0.5 shadow-lg" onClick={onClose}>
               <X size={24} />
             </button>
           </div>
@@ -182,21 +182,21 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
               <img src={poster} alt={title} className="w-[200px] md:w-[300px] h-[300px] md:h-[450px] rounded-xl object-cover shadow-volumetric border border-glass-border shrink-0 -mt-[150px] md:mt-0" />
               <div className="grow">
-                <h2 className="text-[clamp(3rem,5vw,4.5rem)] mb-2 leading-[1.1] text-shadow-lg font-bold">{title}</h2>
+                <h2 className="text-[clamp(3rem,5vw,4.5rem)] mb-2 leading-[1.1] text-text-primary drop-shadow-md font-bold">{title}</h2>
                 <div className="flex items-center justify-center md:justify-start gap-4 mb-6 text-[0.95rem]">
-                  <span className="flex items-center gap-1 text-white">
+                  <span className="flex items-center gap-1 text-text-primary font-bold">
                     <Star size={16} fill="var(--warning)" color="var(--warning)" />
                     {details?.vote_average ? Number(details.vote_average).toFixed(1) : (details?.score || 'N/A')}
                   </span>
                   <span className="text-text-secondary">
                     {details?.release_date?.split('-')[0] || details?.first_air_date?.split('-')[0] || details?.year || ''}
                   </span>
-                  <span className="bg-white/10 px-2.5 py-1 rounded text-xs tracking-widest">
+                  <span className="bg-bg-surface-active border border-glass-border px-2.5 py-1 rounded text-xs tracking-widest text-text-primary font-bold">
                     {isAnime ? 'ANIME' : (details?.media_type || 'MEDIA').toUpperCase()}
                   </span>
                 </div>
                 
-                <p className="text-[1.05rem] leading-relaxed text-text-secondary mb-6">{loading ? 'Loading details...' : overview}</p>
+                <p className="text-[1.05rem] leading-relaxed text-text-secondary mb-6 max-w-3xl">{loading ? 'Loading details...' : overview}</p>
 
                 {/* Book Ticket Button */}
                 {isMovieBookable(item, details) && (
@@ -204,27 +204,27 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
                     <button
                       type="button"
                       onClick={() => setShowBooking(true)}
-                      className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-semibold text-sm shadow-[0_0_24px_rgba(59,130,246,0.4)] hover:shadow-[0_0_32px_rgba(59,130,246,0.6)] hover:-translate-y-0.5 transition-all duration-200"
+                      className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-bold text-sm shadow-[0_4px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.5)] hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
                     >
                       <Ticket size={18} />
                       Book Tickets
                     </button>
-                    <p className="mt-2 text-text-muted text-xs">Tickets available · ₹250/seat</p>
+                    <p className="mt-3 text-text-muted text-xs font-medium">Official Ticketing Partner · Starts from ₹250</p>
                   </div>
                 )}
 
                 {cast.length > 0 && (
                   <div>
-                    <h3 className="mb-4 text-[1.2rem] font-bold">Top Cast</h3>
+                    <h3 className="mb-4 text-[1.2rem] font-bold text-text-primary">Top Cast</h3>
                     <div className="flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                       {cast.map(person => (
                         <div key={person.id} className="flex flex-col items-center gap-2 w-[80px] shrink-0">
                           <img 
                             src={person.profile_path ? `https://image.tmdb.org/t/p/w185${person.profile_path}` : 'https://via.placeholder.com/185x185?text=NA'} 
                             alt={person.name} 
-                            className="w-[60px] h-[60px] rounded-full object-cover border-2 border-glass-border" 
+                            className="w-[60px] h-[60px] rounded-full object-cover border-2 border-glass-border shadow-sm" 
                           />
-                          <span className="text-[0.8rem] text-center text-text-secondary">{person.name}</span>
+                          <span className="text-[0.75rem] text-center text-text-secondary font-medium truncate w-full">{person.name}</span>
                         </div>
                       ))}
                     </div>
@@ -235,7 +235,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 border-t border-glass-border pt-8">
               <div>
-                <h3 className="mb-4 flex items-center gap-2 font-bold text-[1.2rem]">Rate this</h3>
+                <h3 className="mb-4 flex items-center gap-2 font-bold text-[1.2rem] text-text-primary">Rate this</h3>
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-row items-center gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (

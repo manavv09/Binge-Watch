@@ -124,33 +124,33 @@ const Hero = ({ item, onOpenDetails }) => {
         >
           <h1 className="text-[2.5rem] md:text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.1] mb-4 text-shadow-lg font-bold">{title}</h1>
           
-          <div className="flex items-center gap-4 mb-6 text-[0.95rem] font-medium">
-            <span className="flex items-center gap-1 text-white">
+          <div className="flex items-center gap-4 mb-6 text-[0.95rem] font-bold">
+            <span className="flex items-center gap-1 text-text-primary">
               <Star size={16} fill="var(--warning)" color="var(--warning)" />
               {rating}
             </span>
             {item.release_date && <span className="text-text-secondary">{item.release_date.split('-')[0]}</span>}
-            {item.media_type && <span className="bg-white/10 px-2.5 py-1 rounded text-xs tracking-widest">{item.media_type.toUpperCase()}</span>}
+            {item.media_type && <span className="bg-bg-surface-active border border-glass-border px-2.5 py-1 rounded text-xs tracking-widest text-text-primary uppercase">{item.media_type}</span>}
           </div>
           
-          <p className="text-base md:text-lg leading-relaxed text-text-secondary mb-8 line-clamp-3 md:line-clamp-4 drop-shadow-md">{overview}</p>
+          <p className="text-base md:text-lg leading-relaxed text-text-secondary mb-8 line-clamp-3 md:line-clamp-4 max-w-2xl">{overview}</p>
           
           <div className="flex flex-col md:flex-row gap-4 w-full max-w-[300px] md:max-w-none">
             <button 
-              className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-3 rounded-full font-semibold transition-all duration-150 hover:bg-slate-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,255,255,0.1)] disabled:opacity-70" 
+              className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-8 py-3.5 rounded-full font-bold transition-all duration-150 hover:bg-accent-primary hover:text-white hover:-translate-y-0.5 shadow-xl disabled:opacity-70" 
               onClick={handleWatchTrailer} 
               disabled={isLoadingVideo}
-              style={{ boxShadow: '0 0 15px var(--accent-glow)' }}
+              style={{ boxShadow: '0 0 20px var(--accent-glow)' }}
             >
               <Play size={20} fill="currentColor" />
-              {isLoadingVideo ? 'Loading...' : 'Watch Trailer'}
+              {isLoadingVideo ? 'Loading...' : 'WATCH TRAILER'}
             </button>
             <button 
-              className="inline-flex items-center justify-center gap-2 bg-white/10 text-white px-6 py-3 rounded-full font-semibold transition-all duration-150 backdrop-blur-md border border-white/10 hover:bg-white/20 hover:-translate-y-0.5" 
+              className="inline-flex items-center justify-center gap-2 bg-bg-surface-active text-text-primary px-8 py-3.5 rounded-full font-bold transition-all duration-150 backdrop-blur-md border border-glass-border hover:bg-bg-surface-hover hover:-translate-y-0.5 shadow-lg" 
               onClick={() => onOpenDetails(item)}
             >
               <Info size={20} />
-              More Info
+              MORE INFO
             </button>
           </div>
         </motion.div>
