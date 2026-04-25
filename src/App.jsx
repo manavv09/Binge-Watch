@@ -161,6 +161,7 @@ function App() {
           loading={loading}
           onOpenDetails={setSelectedItem}
           onLoadMore={activeCategory !== 'watchlist' && activeCategory !== 'upcoming' ? () => setPage(p => p + 1) : null}
+          activeCategory={activeCategory}
         />
       </main>
 
