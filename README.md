@@ -64,6 +64,19 @@ VITE_FIREBASE_APP_ID=your_app_id
 npm run dev
 ```
 
+## Deploy on Vercel
+
+This project is configured for SPA routing on Vercel using `vercel.json`.
+
+1. Push your code to GitHub.
+2. Import the repository in [Vercel](https://vercel.com/new).
+3. Add the same environment variables from your local `.env` file in Vercel Project Settings.
+4. Deploy.
+
+Vercel will automatically use:
+- Build command: `npm run build`
+- Output directory: `dist`
+
 ## 📸 Screenshots
 
 | Home Dashboard | Movie Details |
