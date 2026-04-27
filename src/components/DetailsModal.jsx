@@ -152,13 +152,19 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   return (
     <>
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[2000] flex items-center justify-center md:p-4" onClick={onClose}>
+      <motion.div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[2000] flex items-center justify-center md:p-4"
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
         <motion.div 
           className="w-full h-full md:rounded-[24px] bg-bg-surface overflow-x-hidden overflow-y-auto relative flex flex-col backdrop-blur-md border border-glass-border shadow-2xl"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          initial={{ opacity: 0, y: 24, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 50, scale: 0.95 }}
-          transition={{ duration: 0.3 }}
+          exit={{ opacity: 0, y: 24, scale: 0.98 }}
+          transition={{ duration: 0.24, ease: "easeOut" }}
           onClick={e => e.stopPropagation()}
         >
           <div className="absolute top-4 right-4 z-10 flex gap-2">
@@ -274,7 +280,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
                     placeholder="Share your thoughts..."
                     className="grow bg-black/40 border border-glass-border p-3 rounded-lg text-white focus:outline-none focus:border-accent-primary focus:shadow-[0_0_0_3px_var(--accent-glow)] focus:bg-black/60 transition-all"
                   />
-                  <button type="submit" className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-3 rounded-lg font-semibold transition-all duration-150 hover:bg-slate-200 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(255,255,255,0.1)] border-none cursor-pointer disabled:opacity-50" disabled={!comment.trim()}>
+                  <button type="submit" className="btn-primary px-6 py-3 rounded-lg disabled:opacity-50" disabled={!comment.trim()}>
                     <Send size={18} />
                   </button>
                 </form>
@@ -298,7 +304,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
             </div>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </AnimatePresence>
 
     {/* Booking Partners Modal */}

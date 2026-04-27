@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, X, Film, User, LogOut, Star } from 'lucide-react';
+import { Search, Menu, X, User, LogOut, Star } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { searchTMDB, searchAnime } from '../utils/api';
@@ -11,7 +11,10 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [avatarLoadFailed, setAvatarLoadFailed] = useState(false);
   const searchRef = useRef(null);
+  const profileRef = useRef(null);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
@@ -27,10 +30,17 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSuggestionsOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    setAvatarLoadFailed(false);
+  }, [currentUser?.uid, currentUser?.photoURL]);
 
   const fetchSuggestions = async (query) => {
     if (query.length < 2) {
@@ -88,16 +98,29 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      setIsProfileOpen(false);
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
 
+  const providerProfile = currentUser?.providerData?.find(
+    (p) => p?.providerId === 'google.com' || p?.providerId === 'github.com'
+  );
+  const avatarUrl = providerProfile?.photoURL || currentUser?.photoURL;
+  const providerName = providerProfile?.providerId === 'google.com'
+    ? 'Google'
+    : providerProfile?.providerId === 'github.com'
+      ? 'GitHub'
+      : 'Email';
+  const displayName = currentUser?.displayName || currentUser?.email || 'User';
+  const avatarFallback = displayName.trim().charAt(0).toUpperCase();
+
   return (
-    <nav className={`fixed top-[1rem] md:top-[1.5rem] left-[5%] w-[90%] h-[70px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'bg-bg-surface backdrop-blur-md !border-glass-border shadow-[0_4px_20px_rgba(0,0,0,0.4)]' : 'bg-transparent'}`}>
+    <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[92%] max-w-[1400px] h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-8">
         <div className="flex items-center gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
-          <img src="/logo.jpg" alt="Binge Watcher" className="h-8 md:h-10 w-auto object-contain rounded-lg" />
+          <img src="/logo.jpg" alt="Binge Watcher" className="h-8 md:h-10 w-auto object-contain rounded-xl ring-1 ring-white/15" />
         </div>
 
         {/* Desktop Navigation */}
@@ -116,7 +139,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
         <div className="flex items-center gap-3 lg:gap-6">
           {/* Search Bar */}
           <div className="hidden md:block relative group" ref={searchRef}>
-            <form className="w-[200px] lg:w-[300px]" onSubmit={handleSearchSubmit}>
+            <form className="w-[220px] lg:w-[320px]" onSubmit={handleSearchSubmit}>
               <div className="relative flex items-center w-full">
                 <Search className="absolute left-4 text-text-muted transition-colors group-focus-within:text-accent-primary" size={16} />
                 <input
@@ -125,7 +148,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
                   value={searchValue}
                   onChange={handleSearchChange}
                   onFocus={() => searchValue && setIsSuggestionsOpen(true)}
-                  className="w-full bg-black/40 border border-glass-border rounded-full py-2 pr-4 pl-11 text-text-primary text-[0.85rem] transition-all duration-200 focus:outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-4 focus:ring-accent-primary/10"
+                  className="w-full bg-black/35 border border-glass-border rounded-full py-2.5 pr-4 pl-11 text-text-primary text-[0.85rem] transition-all duration-200 focus:outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-4 focus:ring-accent-primary/10"
                 />
               </div>
             </form>
@@ -169,11 +192,64 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
 
           {/* Auth Button */}
           {currentUser ? (
-            <button className="bg-white/5 text-text-primary border border-glass-border w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 hover:bg-danger/10 hover:text-danger hover:border-danger/30" onClick={handleSignOut} title="Sign Out">
-              <LogOut size={20} />
-            </button>
+            <div className="relative" ref={profileRef}>
+              <button
+                className="w-10 h-10 rounded-full border border-glass-border bg-bg-surface-active overflow-hidden shadow-sm flex items-center justify-center text-sm font-bold text-text-primary transition-all duration-150 hover:-translate-y-0.5 hover:border-accent-primary/60"
+                title={displayName}
+                onClick={() => setIsProfileOpen((prev) => !prev)}
+              >
+                {avatarUrl && !avatarLoadFailed ? (
+                  <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    onError={() => setAvatarLoadFailed(true)}
+                  />
+                ) : (
+                  <span>{avatarFallback}</span>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    transition={{ duration: 0.16 }}
+                    className="absolute right-0 top-[calc(100%+12px)] w-[250px] rounded-2xl glass-panel p-3 z-[1200]"
+                  >
+                    <div className="px-3 py-2 border-b border-glass-border">
+                      <p className="text-sm font-semibold text-text-primary truncate">{currentUser.displayName || 'Signed in user'}</p>
+                      <p className="text-xs text-text-muted truncate">{currentUser.email || 'No email available'}</p>
+                      <p className="text-[11px] text-accent-primary mt-1 font-semibold">{providerName} profile</p>
+                    </div>
+
+                    <div className="mt-2 flex flex-col gap-1">
+                      <button
+                        className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                        onClick={() => {
+                          setActiveCategory('watchlist');
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        My List
+                      </button>
+                      <button
+                        className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-danger hover:bg-danger/10 transition-all inline-flex items-center gap-2"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut size={16} />
+                        Sign Out
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           ) : (
-            <button className="hidden sm:inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-2 rounded-full font-bold text-[0.85rem] transition-all duration-150 hover:bg-slate-200 hover:-translate-y-0.5 shadow-lg active:scale-95 whitespace-nowrap" onClick={onOpenAuth}>
+            <button className="hidden sm:inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-2.5 rounded-full font-bold text-[0.85rem] transition-all duration-150 hover:bg-accent-primary hover:text-white hover:-translate-y-0.5 shadow-lg active:scale-95 whitespace-nowrap" onClick={onOpenAuth}>
               <User size={16} />
               SIGN IN
             </button>
@@ -196,7 +272,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-[80px] left-0 w-full bg-bg-surface-active backdrop-blur-xl border-b border-glass-border p-4 flex flex-col gap-4 shadow-2xl rounded-2xl md:hidden z-[999]"
+            className="absolute top-[80px] left-0 w-full glass-panel p-4 flex flex-col gap-4 shadow-2xl rounded-2xl md:hidden z-[999]"
           >
             <form className="w-full" onSubmit={handleSearchSubmit}>
               <div className="relative flex items-center w-full">

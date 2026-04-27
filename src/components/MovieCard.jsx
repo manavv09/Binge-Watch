@@ -25,9 +25,9 @@ const MovieCard = ({ item, onOpenDetails }) => {
       transition={{ duration: 0.2, ease: "easeOut" }}
       onClick={() => onOpenDetails(item)}
     >
-      <div className="relative aspect-[2/3] rounded-[20px] overflow-hidden bg-bg-surface border border-glass-border">
-        <img src={poster} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-base/90 via-bg-base/20 to-transparent opacity-0 flex items-end justify-center pb-8 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+      <div className="relative aspect-[2/3] rounded-[20px] overflow-hidden bg-bg-surface border border-glass-border shadow-[0_10px_20px_rgba(2,6,23,0.35)]">
+        <img src={poster} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]" loading="lazy" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-base/95 via-bg-base/25 to-transparent opacity-0 flex items-end justify-center pb-7 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
           <span className="bg-accent-primary text-white px-5 py-2.5 rounded-full text-[0.8rem] font-bold tracking-tight shadow-lg shadow-accent-primary/30 active:scale-95">VIEW DETAILS</span>
         </div>
         {rating && (
@@ -38,8 +38,8 @@ const MovieCard = ({ item, onOpenDetails }) => {
         )}
       </div>
       <div className="px-1">
-        <h3 className="font-sans text-base font-semibold truncate mb-1">{title}</h3>
-        <p className="text-[0.85rem] text-text-muted">
+        <h3 className="font-sans text-[0.98rem] font-semibold truncate mb-1 text-text-primary">{title}</h3>
+        <p className="text-[0.82rem] text-text-muted tracking-wide">
           {item.release_date ? item.release_date.split('-')[0] : 
            item.first_air_date ? item.first_air_date.split('-')[0] : 
            item.year ? item.year : ''}

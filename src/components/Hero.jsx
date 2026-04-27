@@ -62,7 +62,7 @@ const Hero = ({ item, onOpenDetails }) => {
     };
   }, [bgImage]);
 
-  if (!item) return <div className="w-full h-[75vh] md:h-[85vh] min-h-[600px] bg-gradient-to-r from-bg-surface via-bg-surface-hover to-bg-surface bg-[length:200%_100%] animate-[pulse_2s_infinite]"></div>;
+  if (!item) return <div className="w-full h-[72vh] md:h-[84vh] min-h-[560px] bg-gradient-to-r from-bg-surface via-bg-surface-hover to-bg-surface bg-[length:200%_100%] animate-[pulse_2s_infinite]"></div>;
 
   const handleWatchTrailer = async () => {
     setIsLoadingVideo(true);
@@ -100,9 +100,9 @@ const Hero = ({ item, onOpenDetails }) => {
   const rating = item.vote_average ? Number(item.vote_average).toFixed(1) : (item.score ? item.score : 'N/A');
 
   return (
-    <div className="relative w-full h-[75vh] md:h-[85vh] min-h-[600px] flex items-center overflow-hidden" ref={containerRef}>
+    <div className="relative w-full h-[72vh] md:h-[84vh] min-h-[560px] flex items-center overflow-hidden" ref={containerRef}>
       <motion.div 
-        className="absolute inset-0 w-full h-full bg-cover bg-[center_20%] z-0"
+        className="absolute inset-0 w-full h-full bg-cover bg-center z-0"
         style={{ 
           backgroundImage: `url(${bgImage})`,
           y: backgroundY,
@@ -114,15 +114,18 @@ const Hero = ({ item, onOpenDetails }) => {
         style={{ background: 'linear-gradient(to top, var(--bg-base) 0%, transparent 80%), linear-gradient(to right, var(--bg-base) 0%, transparent 100%)' }}
       />
       
-      <div className="relative z-10 pt-[80px] w-full max-w-container mx-auto px-4 md:px-8">
+      <div className="relative z-10 pt-[88px] w-full max-w-container mx-auto px-4 md:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           style={{ y: textY, opacity }}
-          className="max-w-[600px]"
+          className="max-w-[680px]"
         >
-          <h1 className="text-[2.5rem] md:text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.1] mb-4 text-shadow-lg font-bold">{title}</h1>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4 text-[0.72rem] tracking-[0.16em] uppercase font-bold bg-bg-surface/70 border border-glass-border text-text-secondary">
+            Featured pick
+          </div>
+          <h1 className="text-[2.2rem] sm:text-[2.6rem] md:text-[clamp(2.7rem,5vw,4.6rem)] leading-[1.04] mb-4 text-shadow-lg font-bold">{title}</h1>
           
           <div className="flex items-center gap-4 mb-6 text-[0.95rem] font-bold">
             <span className="flex items-center gap-1 text-text-primary">
@@ -133,11 +136,11 @@ const Hero = ({ item, onOpenDetails }) => {
             {item.media_type && <span className="bg-bg-surface-active border border-glass-border px-2.5 py-1 rounded text-xs tracking-widest text-text-primary uppercase">{item.media_type}</span>}
           </div>
           
-          <p className="text-base md:text-lg leading-relaxed text-text-secondary mb-8 line-clamp-3 md:line-clamp-4 max-w-2xl">{overview}</p>
+          <p className="text-[0.98rem] md:text-lg leading-relaxed text-text-secondary mb-8 line-clamp-3 md:line-clamp-4 max-w-2xl">{overview}</p>
           
-          <div className="flex flex-col md:flex-row gap-4 w-full max-w-[300px] md:max-w-none">
+          <div className="flex flex-col sm:flex-row gap-3.5 w-full max-w-[320px] sm:max-w-none">
             <button 
-              className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-8 py-3.5 rounded-full font-bold transition-all duration-150 hover:bg-accent-primary hover:text-white hover:-translate-y-0.5 shadow-xl disabled:opacity-70" 
+              className="btn-primary px-8 py-3.5 disabled:opacity-70" 
               onClick={handleWatchTrailer} 
               disabled={isLoadingVideo}
               style={{ boxShadow: '0 0 20px var(--accent-glow)' }}
@@ -146,7 +149,7 @@ const Hero = ({ item, onOpenDetails }) => {
               {isLoadingVideo ? 'Loading...' : 'WATCH TRAILER'}
             </button>
             <button 
-              className="inline-flex items-center justify-center gap-2 bg-bg-surface-active text-text-primary px-8 py-3.5 rounded-full font-bold transition-all duration-150 backdrop-blur-md border border-glass-border hover:bg-bg-surface-hover hover:-translate-y-0.5 shadow-lg" 
+              className="btn-secondary px-8 py-3.5" 
               onClick={() => onOpenDetails(item)}
             >
               <Info size={20} />

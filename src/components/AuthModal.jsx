@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock } from 'lucide-react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { auth, googleProvider, githubProvider } from '../utils/firebase';
 
 const AuthModal = ({ onClose, onAuthSuccess }) => {
@@ -21,7 +21,31 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
 
     setLoading(true);
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const providerData = result.user.providerData?.find(
+        (p) => p?.providerId === 'google.com' || p?.providerId === 'github.com'
+      );
+      const profile = result.additionalUserInfo?.profile || {};
+      const fallbackPhoto =
+        providerData?.photoURL ||
+        result.user.photoURL ||
+        profile.picture ||
+        profile.avatar_url ||
+        null;
+      const fallbackName =
+        providerData?.displayName ||
+        result.user.displayName ||
+        profile.name ||
+        profile.login ||
+        null;
+
+      // Ensure profile fields are persisted on Firebase user object.
+      if ((!result.user.photoURL && fallbackPhoto) || (!result.user.displayName && fallbackName)) {
+        await updateProfile(result.user, {
+          photoURL: result.user.photoURL || fallbackPhoto,
+          displayName: result.user.displayName || fallbackName,
+        });
+      }
       onAuthSuccess();
     } catch (err) {
       console.error(err);
@@ -62,20 +86,26 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[3000] flex items-center justify-center p-4" onClick={onClose}>
+      <motion.div
+        className="fixed inset-0 bg-black/65 backdrop-blur-md z-[3000] flex items-center justify-center p-4"
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
         <motion.div 
-          className="w-full max-w-[420px] bg-bg-surface rounded-[24px] p-8 md:p-10 relative text-center backdrop-blur-xl border border-glass-border shadow-2xl"
+          className="w-full max-w-[430px] glass-panel rounded-[24px] p-8 md:p-10 relative text-center"
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.24, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
         >
           <button className="absolute top-5 right-5 w-9 h-9 bg-bg-surface-active border border-glass-border text-text-primary rounded-full flex items-center justify-center transition-all duration-150 hover:-translate-y-0.5 hover:bg-bg-surface-hover cursor-pointer shadow-sm" onClick={onClose}>
             <X size={20} />
           </button>
           
-          <h2 className="text-3xl mb-2 text-text-primary font-bold tracking-tight">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+          <h2 className="text-[2rem] mb-2 text-text-primary font-bold tracking-tight">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
           <p className="text-text-secondary text-[0.95rem] mb-8 font-medium">
             {isLogin ? 'Log in to access your watchlist and ratings.' : 'Sign up to start saving your favorite movies and series.'}
           </p>
@@ -108,7 +138,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
               />
             </div>
 
-            <button type="submit" className="mt-4 p-4 rounded-xl text-base w-full inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base font-bold transition-all duration-150 hover:bg-accent-primary hover:text-white hover:-translate-y-0.5 hover:shadow-xl active:scale-95 border-none cursor-pointer disabled:opacity-70" disabled={loading}>
+            <button type="submit" className="btn-primary mt-4 p-4 rounded-xl text-base w-full disabled:opacity-70" disabled={loading}>
               {loading ? 'Processing...' : (isLogin ? 'LOG IN' : 'SIGN UP')}
             </button>
           </form>
@@ -145,7 +175,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
             </button>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </AnimatePresence>
   );
 };

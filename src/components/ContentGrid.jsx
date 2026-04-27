@@ -72,14 +72,14 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
     : items;
 
   return (
-    <section className="container pt-12 pb-16">
+    <section className="container pt-14 pb-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
-          <h2 className="text-[2.2rem] flex items-center gap-3 font-outfit font-extrabold tracking-tight">
+          <h2 className="text-[2rem] sm:text-[2.25rem] flex items-center gap-3 font-outfit font-extrabold tracking-tight">
             <div className="w-1.5 h-8 bg-accent-primary rounded-full shadow-[0_0_15px_var(--accent-glow)]"></div>
             {title}
           </h2>
-          <p className="text-text-muted mt-1 text-[0.95rem]">
+          <p className="text-text-muted mt-1.5 text-[0.95rem]">
             {filteredItems.length} titles found in this category
           </p>
         </div>
@@ -93,7 +93,7 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
             </div>
             <button
               onClick={() => setSelectedGenre(null)}
-              className={`px-4 py-1.5 rounded-full text-[0.85rem] font-semibold transition-all whitespace-nowrap ${!selectedGenre ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary border border-glass-border'}`}
+              className={`px-4 py-2 rounded-full text-[0.85rem] font-semibold transition-all whitespace-nowrap ${!selectedGenre ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary border border-glass-border'}`}
             >
               All
             </button>
@@ -101,7 +101,7 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
               <button
                 key={genre.id}
                 onClick={() => setSelectedGenre(genre.id)}
-                className={`px-4 py-1.5 rounded-full text-[0.85rem] font-semibold transition-all whitespace-nowrap ${selectedGenre === genre.id ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary border border-glass-border'}`}
+                className={`px-4 py-2 rounded-full text-[0.85rem] font-semibold transition-all whitespace-nowrap ${selectedGenre === genre.id ? 'bg-accent-primary text-white shadow-lg shadow-accent-primary/20' : 'bg-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary border border-glass-border'}`}
               >
                 {genre.name}
               </button>
@@ -111,16 +111,19 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
       </div>
       
       {loading && items.length === 0 ? (
-        <div className="p-20 flex flex-col items-center justify-center gap-6 min-h-[400px] bg-bg-surface backdrop-blur-md border border-glass-border rounded-[2rem]">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 border-4 border-accent-primary/20 border-t-accent-primary rounded-full"
-          />
-          <p className="text-text-secondary font-semibold animate-pulse">Scanning the multiverse...</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 sm:gap-6 lg:gap-7">
+          {Array.from({ length: 12 }).map((_, idx) => (
+            <div key={idx} className="animate-pulse">
+              <div className="aspect-[2/3] rounded-[20px] bg-bg-surface-active/80 border border-glass-border" />
+              <div className="mt-3 px-1 space-y-2">
+                <div className="h-4 rounded bg-bg-surface-active/70 w-[85%]" />
+                <div className="h-3 rounded bg-bg-surface-active/50 w-[45%]" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (!filteredItems || filteredItems.length === 0) ? (
-        <div className="p-20 text-center bg-bg-surface backdrop-blur-md border border-glass-border rounded-[2rem] flex flex-col items-center gap-4">
+        <div className="p-20 text-center glass-panel rounded-[2rem] flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-text-muted">
             <Film size={32} />
           </div>
@@ -131,7 +134,7 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
         </div>
       ) : (
         <motion.div 
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 lg:gap-8"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 sm:gap-6 lg:gap-7"
           variants={containerVariants}
           initial="hidden"
           animate="show"
@@ -159,7 +162,7 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
       {onLoadMore && !loading && items.length > 0 && !selectedGenre && (
         <div className="text-center mt-16">
           <button 
-            className="inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-10 py-4 rounded-full font-bold text-[0.95rem] transition-all hover:scale-105 active:scale-95 shadow-xl"
+            className="btn-primary px-10 py-4 text-[0.95rem] hover:scale-105"
             onClick={onLoadMore}
           >
             Show More Results

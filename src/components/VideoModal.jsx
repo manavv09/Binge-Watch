@@ -15,16 +15,19 @@ const VideoModal = ({ videoKey, onClose }) => {
 
   return (
     <AnimatePresence>
-      <div
+      <motion.div
         className="fixed inset-0 bg-black/90 backdrop-blur-md z-[4000] flex items-center justify-center p-4 md:p-8"
         onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
       >
         <motion.div
           className="w-full max-w-[1100px] relative bg-black rounded-xl overflow-visible shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, scale: 0.96, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 16 }}
+          transition={{ duration: 0.24, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -44,7 +47,7 @@ const VideoModal = ({ videoKey, onClose }) => {
             ></iframe>
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </AnimatePresence>
   );
 };
