@@ -4,11 +4,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { FastAverageColor } from 'fast-average-color';
 import { getTMDBDetails, getAnimeDetails } from '../utils/api';
 import VideoModal from './VideoModal';
+import { useToast } from './ToastProvider';
 
 const Hero = ({ item, onOpenDetails }) => {
   const [videoKey, setVideoKey] = useState(null);
   const [showVideo, setShowVideo] = useState(false);
   const [isLoadingVideo, setIsLoadingVideo] = useState(false);
+  const toast = useToast();
 
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -73,7 +75,7 @@ const Hero = ({ item, onOpenDetails }) => {
           setVideoKey(details.trailer.youtube_id);
           setShowVideo(true);
         } else {
-          alert('No trailer available for this anime.');
+          toast.push({ type: 'warning', title: 'Trailer not available', message: 'No trailer found for this anime.' });
         }
       } else {
         const mediaType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
@@ -83,12 +85,12 @@ const Hero = ({ item, onOpenDetails }) => {
           setVideoKey(trailer.key);
           setShowVideo(true);
         } else {
-          alert('No trailer available.');
+          toast.push({ type: 'warning', title: 'Trailer not available', message: 'No trailer found for this title.' });
         }
       }
     } catch (error) {
       console.error(error);
-      alert('Error loading trailer.');
+      toast.push({ type: 'error', title: 'Could not load trailer', message: 'Please try again in a moment.' });
     } finally {
       setIsLoadingVideo(false);
     }

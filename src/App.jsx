@@ -4,6 +4,8 @@ import { auth } from './utils/firebase';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ContentGrid from './components/ContentGrid';
+import MobileBottomNav from './components/MobileBottomNav';
+import { ToastProvider } from './components/ToastProvider';
 import { 
   getTrending, 
   getUpcomingMovies, 
@@ -142,48 +144,60 @@ function App() {
   }, [activeCategory, searchQuery, page, currentUser]);
 
   return (
-    <div className="min-h-screen bg-bg-base text-text-primary font-sans">
-      <Navbar 
-        activeCategory={activeCategory} 
-        setActiveCategory={(cat) => {
-          setActiveCategory(cat);
-          setSearchQuery('');
-        }}
-        onSearch={handleSearch} 
-        currentUser={currentUser}
-        onOpenAuth={() => setShowAuthModal(true)}
-      />
-      
-      <main>
-        <Hero item={heroItem} onOpenDetails={setSelectedItem} />
-        <ContentGrid 
-          title={gridData.title} 
-          items={gridData.items} 
-          loading={loading}
-          onOpenDetails={setSelectedItem}
-          onLoadMore={activeCategory !== 'watchlist' && activeCategory !== 'upcoming' ? () => setPage(p => p + 1) : null}
-          activeCategory={activeCategory}
+    <ToastProvider>
+      <div className="min-h-screen bg-bg-base text-text-primary font-sans pb-24 md:pb-0">
+        <Navbar 
+          activeCategory={activeCategory} 
+          setActiveCategory={(cat) => {
+            setActiveCategory(cat);
+            setSearchQuery('');
+          }}
+          onSearch={handleSearch} 
+          currentUser={currentUser}
+          onOpenAuth={() => setShowAuthModal(true)}
         />
-      </main>
-
-      <Suspense fallback={null}>
-        {selectedItem && (
-          <DetailsModal 
-            item={selectedItem} 
-            onClose={() => setSelectedItem(null)} 
-            currentUser={currentUser}
-            onRequireAuth={() => setShowAuthModal(true)}
+        
+        <main>
+          <Hero item={heroItem} onOpenDetails={setSelectedItem} />
+          <ContentGrid 
+            title={gridData.title} 
+            items={gridData.items} 
+            loading={loading}
+            onOpenDetails={setSelectedItem}
+            onLoadMore={activeCategory !== 'watchlist' && activeCategory !== 'upcoming' ? () => setPage(p => p + 1) : null}
+            activeCategory={activeCategory}
           />
-        )}
+        </main>
 
-        {showAuthModal && (
-          <AuthModal 
-            onClose={() => setShowAuthModal(false)} 
-            onAuthSuccess={() => setShowAuthModal(false)} 
-          />
-        )}
-      </Suspense>
-    </div>
+        <MobileBottomNav
+          activeCategory={activeCategory}
+          setActiveCategory={(cat) => {
+            setActiveCategory(cat);
+            setSearchQuery('');
+          }}
+          currentUser={currentUser}
+          onOpenAuth={() => setShowAuthModal(true)}
+        />
+
+        <Suspense fallback={null}>
+          {selectedItem && (
+            <DetailsModal 
+              item={selectedItem} 
+              onClose={() => setSelectedItem(null)} 
+              currentUser={currentUser}
+              onRequireAuth={() => setShowAuthModal(true)}
+            />
+          )}
+
+          {showAuthModal && (
+            <AuthModal 
+              onClose={() => setShowAuthModal(false)} 
+              onAuthSuccess={() => setShowAuthModal(false)} 
+            />
+          )}
+        </Suspense>
+      </div>
+    </ToastProvider>
   );
 }
 

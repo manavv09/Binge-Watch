@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Menu, X, User, LogOut, Star } from 'lucide-react';
+import { Search, X, User, LogOut, Star } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { searchTMDB, searchAnime } from '../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOpenAuth }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -84,7 +83,6 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
     e.preventDefault();
     if (searchValue.trim()) {
       onSearch(searchValue);
-      setIsMobileMenuOpen(false);
       setIsSuggestionsOpen(false);
     }
   };
@@ -120,7 +118,10 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
     <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[92%] max-w-[1400px] h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-8">
         <div className="flex items-center gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
-          <img src="/logo.jpg" alt="Binge Watcher" className="h-8 md:h-10 w-auto object-contain rounded-xl ring-1 ring-white/15" />
+          <img src="/binge-watch-icon.png" alt="BingeWatch" className="h-9 md:h-10 w-9 md:w-10 object-contain rounded-xl ring-1 ring-white/15" />
+          <span className="hidden sm:block font-outfit font-extrabold tracking-tight text-[1.05rem] md:text-[1.15rem] text-text-primary">
+            BingeWatch
+          </span>
         </div>
 
         {/* Desktop Navigation */}
@@ -254,112 +255,8 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
               SIGN IN
             </button>
           )}
-
-          {/* Mobile Toggle */}
-          <button 
-            className="block md:hidden bg-transparent border-none text-text-primary cursor-pointer p-1"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-[80px] left-0 w-full glass-panel p-4 flex flex-col gap-4 shadow-2xl rounded-2xl md:hidden z-[999]"
-          >
-            <form className="w-full" onSubmit={handleSearchSubmit}>
-              <div className="relative flex items-center w-full">
-                <Search className="absolute left-4 text-text-muted" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                  className="w-full bg-black/40 border border-glass-border rounded-full py-3 pr-4 pl-11 text-text-primary text-[0.95rem] focus:outline-none focus:border-accent-primary focus:bg-black/60"
-                />
-              </div>
-            </form>
-
-            {!currentUser ? (
-              <button
-                className="btn-primary w-full py-3.5"
-                onClick={() => {
-                  onOpenAuth();
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                <User size={18} />
-                Sign In
-              </button>
-            ) : (
-              <div className="glass-panel rounded-2xl p-3">
-                <div className="flex items-center gap-3 px-1 pb-3 border-b border-glass-border">
-                  <div className="w-10 h-10 rounded-full border border-glass-border bg-bg-surface-active overflow-hidden shadow-sm flex items-center justify-center text-sm font-bold text-text-primary">
-                    {avatarUrl && !avatarLoadFailed ? (
-                      <img
-                        src={avatarUrl}
-                        alt={displayName}
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                        onError={() => setAvatarLoadFailed(true)}
-                      />
-                    ) : (
-                      <span>{avatarFallback}</span>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-text-primary truncate">{currentUser.displayName || 'Signed in user'}</p>
-                    <p className="text-xs text-text-muted truncate">{currentUser.email || 'No email available'}</p>
-                  </div>
-                </div>
-                <div className="mt-2 flex gap-2">
-                  <button
-                    className="flex-1 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
-                    onClick={() => {
-                      setActiveCategory('watchlist');
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    My List
-                  </button>
-                  <button
-                    className="flex-1 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-danger hover:bg-danger/10 transition-all inline-flex items-center justify-center gap-2"
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                  >
-                    <LogOut size={16} />
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-1">
-              {navItems.map(item => (
-                <button
-                  key={item.id}
-                  className={`w-full text-left p-4 rounded-xl text-[1rem] font-semibold transition-all duration-150 hover:bg-white/5 ${activeCategory === item.id ? 'bg-white/5 text-accent-primary' : 'text-text-secondary'}`}
-                  onClick={() => {
-                    setActiveCategory(item.id);
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 };

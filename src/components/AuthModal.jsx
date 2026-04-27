@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock } from 'lucide-react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { auth, googleProvider, githubProvider } from '../utils/firebase';
+import { useToast } from './ToastProvider';
 
 const AuthModal = ({ onClose, onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -10,6 +11,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const handleOAuthSignIn = async (provider) => {
     setError('');
@@ -46,6 +48,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
           displayName: result.user.displayName || fallbackName,
         });
       }
+      toast.push({ type: 'success', title: 'Signed in', message: `Welcome${(result.user.displayName ? `, ${result.user.displayName}` : '')}!` });
       onAuthSuccess();
     } catch (err) {
       console.error(err);
@@ -54,6 +57,7 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
       } else {
         setError(err.message.replace('Firebase: ', ''));
       }
+      toast.push({ type: 'error', title: 'Sign-in failed', message: 'Please check and try again.' });
     } finally {
       setLoading(false);
     }
@@ -72,13 +76,16 @@ const AuthModal = ({ onClose, onAuthSuccess }) => {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        toast.push({ type: 'success', title: 'Logged in', message: 'Welcome back!' });
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
+        toast.push({ type: 'success', title: 'Account created', message: 'You are now signed in.' });
       }
       onAuthSuccess();
     } catch (err) {
       console.error(err);
       setError(err.message.replace('Firebase: ', ''));
+      toast.push({ type: 'error', title: 'Authentication failed', message: 'Please check your details and try again.' });
     } finally {
       setLoading(false);
     }

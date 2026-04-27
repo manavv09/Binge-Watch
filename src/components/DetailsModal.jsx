@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getTMDBDetails, getAnimeDetails } from '../utils/api';
 import { addToWatchlist, removeFromWatchlist, getWatchlist } from '../utils/firestore';
 import BookingPartnersModal from './BookingPartnersModal';
+import { useToast } from './ToastProvider';
 
 // A movie is bookable if it's a movie (not anime/tv) and release date is within 90 days from today
 const isMovieBookable = (item, details) => {
@@ -24,6 +25,7 @@ const isMovieBookable = (item, details) => {
 const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   
   // Interactive features state
   const [userRating, setUserRating] = useState(0);
@@ -87,15 +89,26 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   const handleWatchlistToggle = async () => {
     if (!currentUser) {
       onRequireAuth();
+      toast.push({ type: 'info', title: 'Sign in required', message: 'Please sign in to use your watchlist.' });
       return;
     }
     
     if (isWatchlisted) {
       const success = await removeFromWatchlist(currentUser.uid, item);
-      if (success) setIsWatchlisted(false);
+      if (success) {
+        setIsWatchlisted(false);
+        toast.push({ type: 'success', title: 'Removed from watchlist', message: 'This title was removed from your list.' });
+      } else {
+        toast.push({ type: 'error', title: 'Could not remove', message: 'Please try again.' });
+      }
     } else {
       const success = await addToWatchlist(currentUser.uid, details || item);
-      if (success) setIsWatchlisted(true);
+      if (success) {
+        setIsWatchlisted(true);
+        toast.push({ type: 'success', title: 'Added to watchlist', message: 'Saved to your list.' });
+      } else {
+        toast.push({ type: 'error', title: 'Could not add', message: 'Please try again.' });
+      }
     }
   };
 
