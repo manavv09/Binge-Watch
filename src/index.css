@@ -85,6 +85,18 @@ body::before {
     @apply w-full max-w-container mx-auto px-4 md:px-8;
   }
 
+  .glass-panel {
+    @apply bg-bg-surface backdrop-blur-xl border border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-text-primary text-bg-base px-6 py-3 rounded-full font-bold text-[0.9rem] transition-all duration-150 hover:bg-accent-primary hover:text-white hover:-translate-y-0.5 active:scale-95 shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-bg-surface-active text-text-primary px-6 py-3 rounded-full font-bold text-[0.9rem] transition-all duration-150 backdrop-blur-md border border-glass-border hover:bg-bg-surface-hover hover:-translate-y-0.5 active:scale-95 shadow-lg;
+  }
+
   /* Base button reset */
   button {
     @apply cursor-pointer border-none bg-transparent font-sans text-inherit;

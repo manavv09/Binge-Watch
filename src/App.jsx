@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './utils/firebase';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ContentGrid from './components/ContentGrid';
-import DetailsModal from './components/DetailsModal';
-import AuthModal from './components/AuthModal';
 import { 
   getTrending, 
   getUpcomingMovies, 
@@ -16,6 +14,9 @@ import {
   searchAnime
 } from './utils/api';
 import { getWatchlist } from './utils/firestore';
+
+const DetailsModal = lazy(() => import('./components/DetailsModal'));
+const AuthModal = lazy(() => import('./components/AuthModal'));
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -165,21 +166,23 @@ function App() {
         />
       </main>
 
-      {selectedItem && (
-        <DetailsModal 
-          item={selectedItem} 
-          onClose={() => setSelectedItem(null)} 
-          currentUser={currentUser}
-          onRequireAuth={() => setShowAuthModal(true)}
-        />
-      )}
+      <Suspense fallback={null}>
+        {selectedItem && (
+          <DetailsModal 
+            item={selectedItem} 
+            onClose={() => setSelectedItem(null)} 
+            currentUser={currentUser}
+            onRequireAuth={() => setShowAuthModal(true)}
+          />
+        )}
 
-      {showAuthModal && (
-        <AuthModal 
-          onClose={() => setShowAuthModal(false)} 
-          onAuthSuccess={() => setShowAuthModal(false)} 
-        />
-      )}
+        {showAuthModal && (
+          <AuthModal 
+            onClose={() => setShowAuthModal(false)} 
+            onAuthSuccess={() => setShowAuthModal(false)} 
+          />
+        )}
+      </Suspense>
     </div>
   );
 }
