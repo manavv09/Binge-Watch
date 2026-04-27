@@ -286,6 +286,63 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
                 />
               </div>
             </form>
+
+            {!currentUser ? (
+              <button
+                className="btn-primary w-full py-3.5"
+                onClick={() => {
+                  onOpenAuth();
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                <User size={18} />
+                Sign In
+              </button>
+            ) : (
+              <div className="glass-panel rounded-2xl p-3">
+                <div className="flex items-center gap-3 px-1 pb-3 border-b border-glass-border">
+                  <div className="w-10 h-10 rounded-full border border-glass-border bg-bg-surface-active overflow-hidden shadow-sm flex items-center justify-center text-sm font-bold text-text-primary">
+                    {avatarUrl && !avatarLoadFailed ? (
+                      <img
+                        src={avatarUrl}
+                        alt={displayName}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                        onError={() => setAvatarLoadFailed(true)}
+                      />
+                    ) : (
+                      <span>{avatarFallback}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-text-primary truncate">{currentUser.displayName || 'Signed in user'}</p>
+                    <p className="text-xs text-text-muted truncate">{currentUser.email || 'No email available'}</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex gap-2">
+                  <button
+                    className="flex-1 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                    onClick={() => {
+                      setActiveCategory('watchlist');
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    My List
+                  </button>
+                  <button
+                    className="flex-1 px-3 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-danger hover:bg-danger/10 transition-all inline-flex items-center justify-center gap-2"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut size={16} />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="flex flex-col gap-1">
               {navItems.map(item => (
                 <button
