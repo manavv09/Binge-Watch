@@ -1,10 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { X, Star, MessageSquare, Send, Bookmark, BookmarkCheck, Ticket } from 'lucide-react';
+import { X, Star, MessageSquare, Send, Bookmark, BookmarkCheck, Ticket, MonitorPlay } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getTMDBDetails, getAnimeDetails } from '../utils/api';
 import { addToWatchlist, removeFromWatchlist, getWatchlist } from '../utils/firestore';
 import BookingPartnersModal from './BookingPartnersModal';
 import { useToast } from './ToastProvider';
+
+// Helper function to generate direct search links for popular OTTs
+const getDirectOttLink = (providerName, title) => {
+  if (!title || !providerName) return null;
+  const encodedTitle = encodeURIComponent(title);
+  const name = providerName.toLowerCase();
+  
+  if (name.includes('netflix')) return `https://www.netflix.com/search?q=${encodedTitle}`;
+  if (name.includes('amazon') || name.includes('prime')) return `https://www.primevideo.com/search/ref=atv_sr_sug_1?phrase=${encodedTitle}`;
+  if (name.includes('hotstar')) return `https://www.hotstar.com/in/explore?search_query=${encodedTitle}`;
+  if (name.includes('zee5')) return `https://www.zee5.com/search?q=${encodedTitle}`;
+  if (name.includes('sonyliv')) return `https://www.sonyliv.com/search?query=${encodedTitle}`;
+  if (name.includes('apple')) return `https://tv.apple.com/search?q=${encodedTitle}`;
+  if (name.includes('youtube')) return `https://www.youtube.com/results?search_query=${encodedTitle}+movie`;
+  if (name.includes('google play')) return `https://play.google.com/store/search?q=${encodedTitle}&c=movies`;
+  if (name.includes('jio')) return `https://www.jiocinema.com/search?q=${encodedTitle}`;
+  if (name.includes('hulu')) return `https://www.hulu.com/search?q=${encodedTitle}`;
+  if (name.includes('max') || name.includes('hbo')) return `https://www.max.com/search?q=${encodedTitle}`;
+  if (name.includes('disney')) return `https://www.disneyplus.com/search?q=${encodedTitle}`;
+  if (name.includes('crunchyroll')) return `https://www.crunchyroll.com/search?q=${encodedTitle}`;
+  
+  return null;
+};
 
 // A movie is bookable if it's a movie (not anime/tv) and release date is within 90 days from today
 const isMovieBookable = (item, details) => {
@@ -162,6 +185,63 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
     cast = details.credits.cast.slice(0, 6);
   }
 
+  // Extract streaming providers
+  let streamingProviders = [];
+  let streamingLink = null;
+
+  if (isAnime && details?.streaming) {
+    streamingProviders = details.streaming.map(s => ({
+      provider_name: s.name,
+      url: s.url
+    }));
+  } else if (details?.['watch/providers']?.results) {
+    const results = details['watch/providers'].results;
+    const countryData = results.IN || results.US || Object.values(results)[0];
+    
+    if (countryData) {
+      streamingLink = countryData.link;
+      // Combine flatrate, rent, buy
+      const allProviders = [
+        ...(countryData.flatrate || []),
+        ...(countryData.rent || []),
+        ...(countryData.buy || [])
+      ];
+
+      const normalizeProviderName = (name) => {
+        if (!name) return '';
+        const lowerName = name.toLowerCase();
+        if (lowerName.includes('amazon') || lowerName.includes('prime')) return 'Amazon Prime Video';
+        if (lowerName.includes('netflix')) return 'Netflix';
+        if (lowerName.includes('apple')) return 'Apple TV';
+        if (lowerName.includes('disney') || lowerName.includes('hotstar')) return 'Disney+ Hotstar';
+        if (lowerName.includes('hulu')) return 'Hulu';
+        if (lowerName.includes('max') || lowerName.includes('hbo')) return 'Max';
+        if (lowerName.includes('crunchyroll')) return 'Crunchyroll';
+        if (lowerName.includes('jio')) return 'JioCinema';
+        if (lowerName.includes('youtube')) return 'YouTube';
+        if (lowerName.includes('google play')) return 'Google Play Movies';
+        if (lowerName.includes('zee5')) return 'ZEE5';
+        if (lowerName.includes('sonyliv')) return 'Sony LIV';
+        return name;
+      };
+      
+      const uniqueProviders = [];
+      const seenNames = new Set();
+      
+      allProviders.forEach(p => {
+        const normalizedName = normalizeProviderName(p.provider_name);
+        if (normalizedName && !seenNames.has(normalizedName)) {
+          seenNames.add(normalizedName);
+          uniqueProviders.push({
+            provider_name: normalizedName,
+            logo_path: p.logo_path && p.logo_path.startsWith('/') ? `https://image.tmdb.org/t/p/original${p.logo_path}` : null
+          });
+        }
+      });
+      streamingProviders = uniqueProviders;
+    }
+  }
+
   return (
     <>
     <AnimatePresence>
@@ -229,6 +309,45 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
                       Book Tickets
                     </button>
                     <p className="mt-3 text-text-muted text-xs font-medium">Official Ticketing Partner · Starts from ₹250</p>
+                  </div>
+                )}
+
+                {/* Where to Watch */}
+                {streamingProviders.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="mb-4 text-[1.2rem] font-bold text-text-primary flex items-center gap-2">
+                      <MonitorPlay size={20} className="text-accent-primary" />
+                      Where to Watch
+                    </h3>
+                    <div className="flex flex-wrap gap-3">
+                      {streamingProviders.map((provider, index) => {
+                        const directUrl = provider.url || getDirectOttLink(provider.provider_name, title);
+                        const finalUrl = directUrl || streamingLink;
+
+                        const content = (
+                          <div key={index} className="flex items-center gap-2 bg-bg-surface-active border border-glass-border rounded-lg p-2 pr-4 shadow-sm hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(59,130,246,0.2)] hover:border-accent-primary/60 hover:bg-black/40 transition-all duration-300 group cursor-pointer">
+                            {provider.logo_path ? (
+                              <div className="overflow-hidden rounded-md">
+                                <img src={provider.logo_path} alt={provider.provider_name} className="w-8 h-8 object-cover group-hover:scale-110 transition-transform duration-300" />
+                              </div>
+                            ) : (
+                              <div className="w-8 h-8 rounded-md bg-accent-primary/10 flex items-center justify-center group-hover:bg-accent-primary/20 transition-colors duration-300">
+                                <MonitorPlay size={16} className="text-accent-primary group-hover:scale-110 transition-transform duration-300" />
+                              </div>
+                            )}
+                            <span className="text-[0.85rem] font-medium text-text-primary group-hover:text-accent-primary transition-colors duration-300">{provider.provider_name}</span>
+                          </div>
+                        );
+
+                        return finalUrl ? (
+                          <a href={finalUrl} target="_blank" rel="noopener noreferrer" key={index} className="block" title={directUrl ? `Open in ${provider.provider_name}` : "Powered by JustWatch"}>
+                            {content}
+                          </a>
+                        ) : (
+                          content
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 
