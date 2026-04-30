@@ -67,7 +67,7 @@ export const searchTMDB = async (query, type = 'multi', page = 1) => {
 
 export const getTMDBDetails = async (id, type) => {
   // type: 'movie' or 'tv'
-  const data = await fetchFromTMDB(`/${type}/${id}`, { append_to_response: 'credits,videos' });
+  const data = await fetchFromTMDB(`/${type}/${id}`, { append_to_response: 'credits,videos,watch/providers' });
   return data;
 };
 
@@ -126,7 +126,22 @@ function generateMockTMDBData(endpoint) {
       title: 'Mock Details View',
       overview: 'Detailed mock overview for testing the UI.',
       credits: { cast: [] },
-      videos: { results: [] }
+      videos: { results: [] },
+      "watch/providers": {
+        results: {
+          IN: {
+            link: "#",
+            flatrate: [
+              { provider_name: "Netflix", logo_path: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg" },
+              { provider_name: "Amazon Prime Video", logo_path: "/dQeAar5H991VYporEjUspolDarG.jpg" }
+            ],
+            rent: [
+              { provider_name: "Apple TV", logo_path: "/9ghgSC0MA082w1vUbc0MofA11N.jpg" }
+            ],
+            buy: []
+          }
+        }
+      }
     };
   }
 
