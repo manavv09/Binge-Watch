@@ -91,5 +91,13 @@ Vercel will automatically use:
 | :---: |
 | ![Auth](./screenshots/auth.png) |
 
+## 📱 Mobile UI Experience
+
+BingeWatch is fully responsive and provides an app-like experience on mobile devices with a custom bottom navigation bar, touch-friendly swiping carousels, and optimized search integration.
+
+| Mobile Home | Mobile Search |
+| :---: | :---: |
+| ![Mobile Home](./screenshots/mobile-home.png) | ![Mobile Search](./screenshots/mobile-search.png) |
+
 ---
 Developed with ❤️ by [Manav R.Bharti](https://github.com/manavv09)
