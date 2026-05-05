@@ -24,7 +24,7 @@ function App() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   
-  const [heroItem, setHeroItem] = useState(null);
+  const [heroItems, setHeroItems] = useState([]);
   const [gridData, setGridData] = useState({ title: '', items: [] });
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -61,7 +61,7 @@ function App() {
       try {
         let newItems = [];
         let newTitle = '';
-        let newHero = null;
+        let newHeroItems = [];
 
         if (activeCategory === 'search' && searchQuery) {
           const tmdbRes = await searchTMDB(searchQuery, 'multi', page);
@@ -69,8 +69,8 @@ function App() {
           newItems = [...tmdbRes, ...animeRes];
           newTitle = `Search Results for "${searchQuery}"`;
           if (page === 1) {
-            const firstRealTMDB = tmdbRes.find(item => !String(item.id).startsWith('mock_'));
-            newHero = firstRealTMDB || animeRes[0] || tmdbRes[0];
+            newHeroItems = newItems.filter(item => !String(item.id).startsWith('mock_')).slice(0, 10);
+            if (newHeroItems.length === 0) newHeroItems = newItems.slice(0, 10);
           }
           
         } else if (activeCategory === 'all') {
@@ -84,27 +84,27 @@ function App() {
           ];
           newTitle = 'Trending Movies, Series & Anime';
           if (page === 1) {
-            const firstRealTMDB = trendingMovies.find(item => !String(item.id).startsWith('mock_'));
-            newHero = firstRealTMDB || trendingAnime[0] || trendingMovies[0];
+            newHeroItems = newItems.filter(item => !String(item.id).startsWith('mock_')).slice(0, 10);
+            if (newHeroItems.length === 0) newHeroItems = newItems.slice(0, 10);
           }
           
         } else if (activeCategory === 'movie') {
           const movies = await getTrending('movie', page);
           newItems = movies;
           newTitle = 'Trending Movies';
-          if (page === 1) newHero = movies[0];
+          if (page === 1) newHeroItems = movies.slice(0, 10);
           
         } else if (activeCategory === 'tv') {
           const tv = await getTrending('tv', page);
           newItems = tv;
           newTitle = 'Trending TV Series';
-          if (page === 1) newHero = tv[0];
+          if (page === 1) newHeroItems = tv.slice(0, 10);
           
         } else if (activeCategory === 'anime') {
           const anime = await getTrendingAnime(page);
           newItems = anime;
           newTitle = 'Top Airing Anime';
-          if (page === 1) newHero = anime[0];
+          if (page === 1) newHeroItems = anime.slice(0, 10);
           
         } else if (activeCategory === 'upcoming') {
           // APIs don't typically paginate upcoming easily without specific endpoints, but we can pass page
@@ -113,8 +113,8 @@ function App() {
           newItems = page === 1 ? [...upcomingMovies.slice(0, 10), ...(upcomingAnime || []).slice(0, 10)] : [];
           newTitle = 'Upcoming Movies & Anime News';
           if (page === 1) {
-            const firstRealTMDB = upcomingMovies.find(item => !String(item.id).startsWith('mock_'));
-            newHero = firstRealTMDB || upcomingAnime?.[0] || upcomingMovies[0];
+            newHeroItems = newItems.filter(item => !String(item.id).startsWith('mock_')).slice(0, 10);
+            if (newHeroItems.length === 0) newHeroItems = newItems.slice(0, 10);
           }
 
         } else if (activeCategory === 'watchlist') {
@@ -122,17 +122,17 @@ function App() {
             const userWatchlist = await getWatchlist(currentUser.uid);
             newItems = userWatchlist;
             newTitle = 'My Watchlist';
-            if (page === 1) newHero = userWatchlist[0];
+            if (page === 1) newHeroItems = userWatchlist.slice(0, 10);
           } else {
             newItems = [];
             newTitle = 'Please Log In to View Watchlist';
-            newHero = null;
+            newHeroItems = [];
           }
         }
 
         if (page === 1) {
           setGridData({ title: newTitle, items: newItems });
-          if (newHero) setHeroItem(newHero);
+          if (newHeroItems.length > 0) setHeroItems(newHeroItems);
         } else {
           setGridData(prev => ({ ...prev, items: [...prev.items, ...newItems] }));
         }
@@ -163,7 +163,7 @@ function App() {
         />
         
         <main>
-          <Hero item={heroItem} onOpenDetails={setSelectedItem} />
+          <Hero items={heroItems} onOpenDetails={setSelectedItem} />
           <ContentGrid 
             title={gridData.title} 
             items={gridData.items} 
