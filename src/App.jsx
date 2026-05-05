@@ -163,6 +163,7 @@ function App() {
             title={gridData.title} 
             items={gridData.items} 
             loading={loading}
+            isLoadingMore={isLoadingMore}
             onOpenDetails={setSelectedItem}
             onLoadMore={activeCategory !== 'watchlist' && activeCategory !== 'upcoming' ? () => setPage(p => p + 1) : null}
             activeCategory={activeCategory}
