@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Film, Filter } from 'lucide-react';
 import MovieCard from './MovieCard';
@@ -52,8 +52,20 @@ const itemVariants = {
   show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', bounce: 0.3 } }
 };
 
-const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeCategory }) => {
+const ContentGrid = ({ title, items, onOpenDetails, loading, isLoadingMore, onLoadMore, activeCategory }) => {
   const [selectedGenre, setSelectedGenre] = useState(null);
+  const observerRef = useRef();
+
+  const lastElementRef = useCallback(node => {
+    if (loading || isLoadingMore) return;
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && onLoadMore && !selectedGenre) {
+        onLoadMore();
+      }
+    });
+    if (node) observerRef.current.observe(node);
+  }, [loading, isLoadingMore, onLoadMore, selectedGenre]);
 
   // Reset genre filter when category changes
   useEffect(() => {
@@ -160,13 +172,10 @@ const ContentGrid = ({ title, items, onOpenDetails, loading, onLoadMore, activeC
       )}
 
       {onLoadMore && !loading && items.length > 0 && !selectedGenre && (
-        <div className="text-center mt-16">
-          <button 
-            className="btn-primary px-10 py-4 text-[0.95rem] hover:scale-105"
-            onClick={onLoadMore}
-          >
-            Show More Results
-          </button>
+        <div ref={lastElementRef} className="w-full h-20 flex items-center justify-center mt-8">
+          {isLoadingMore && (
+            <div className="w-8 h-8 rounded-full border-2 border-accent-primary border-t-transparent animate-spin"></div>
+          )}
         </div>
       )}
     </section>

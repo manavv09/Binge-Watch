@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import LazyImage from './LazyImage';
 
 const MovieCard = ({ item, onOpenDetails }) => {
   const title = item.title || item.name || item.title_english || 'Unknown';
@@ -26,7 +27,12 @@ const MovieCard = ({ item, onOpenDetails }) => {
       onClick={() => onOpenDetails(item)}
     >
       <div className="relative aspect-[2/3] rounded-[20px] overflow-hidden bg-bg-surface border border-glass-border shadow-[0_10px_20px_rgba(2,6,23,0.35)]">
-        <img src={poster} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]" loading="lazy" />
+        <LazyImage 
+          src={poster} 
+          alt={title} 
+          containerClassName="w-full h-full"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.06]" 
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-base/95 via-bg-base/25 to-transparent opacity-0 flex items-end justify-center pb-7 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
           <span className="bg-accent-primary text-white px-5 py-2.5 rounded-full text-[0.8rem] font-bold tracking-tight shadow-lg shadow-accent-primary/30 active:scale-95">VIEW DETAILS</span>
         </div>

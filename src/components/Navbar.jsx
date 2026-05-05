@@ -115,21 +115,21 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
   const avatarFallback = displayName.trim().charAt(0).toUpperCase();
 
   return (
-    <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[92%] max-w-[1400px] h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
-      <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-8">
-        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
-          <img src="/binge-watch-icon.png" alt="BingeWatch" className="h-9 md:h-10 w-9 md:w-10 object-contain rounded-xl ring-1 ring-white/15" />
-          <span className="font-outfit font-extrabold tracking-tight text-[0.95rem] sm:text-[1.05rem] md:text-[1.15rem] text-text-primary">
+    <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[96%] xl:w-[92%] max-w-[1400px] h-[60px] md:h-[64px] lg:h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
+      <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-5 lg:px-8">
+        <div className="flex items-center gap-2 lg:gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
+          <img src="/binge-watch-icon.png" alt="BingeWatch" className="h-9 w-9 md:h-8 md:w-8 lg:h-10 lg:w-10 object-contain rounded-xl ring-1 ring-white/15" />
+          <span className="font-outfit font-extrabold tracking-tight text-[0.95rem] md:text-[0.95rem] lg:text-[1.15rem] text-text-primary">
             BingeWatch
           </span>
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+        <div className="hidden md:flex items-center gap-2 md:gap-3 lg:gap-6 shrink-0">
           {navItems.map(item => (
             <button
               key={item.id}
-              className={`text-[0.9rem] lg:text-[0.95rem] font-medium transition-all duration-150 py-2 relative inline-block group hover:text-text-primary hover:-translate-y-0.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent-primary after:transition-all after:duration-150 after:rounded-sm after:w-0 group-hover:after:w-full ${activeCategory === item.id ? 'text-text-primary -translate-y-0.5 after:!w-full drop-shadow-[0_0_8px_var(--accent-glow)]' : 'text-text-secondary'}`}
+              className={`text-[0.85rem] lg:text-[0.95rem] font-medium transition-all duration-150 py-2 relative inline-block group hover:text-text-primary hover:-translate-y-0.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent-primary after:transition-all after:duration-150 after:rounded-sm after:w-0 group-hover:after:w-full ${activeCategory === item.id ? 'text-text-primary -translate-y-0.5 after:!w-full drop-shadow-[0_0_8px_var(--accent-glow)]' : 'text-text-secondary'}`}
               onClick={() => setActiveCategory(item.id)}
             >
               {item.label}
@@ -137,10 +137,10 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
           ))}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-6">
+        <div className="flex items-center gap-2 lg:gap-6 shrink-0">
           {/* Search Bar */}
           <div className="relative group" ref={searchRef}>
-            <form className="w-[130px] sm:w-[220px] lg:w-[320px]" onSubmit={handleSearchSubmit}>
+            <form className="w-[130px] sm:w-[220px] md:w-[150px] lg:w-[240px] xl:w-[320px]" onSubmit={handleSearchSubmit}>
               <div className="relative flex items-center w-full">
                 <Search className="absolute left-3 sm:left-4 text-text-muted transition-colors group-focus-within:text-accent-primary" size={16} />
                 <input
