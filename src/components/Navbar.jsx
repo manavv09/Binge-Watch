@@ -160,7 +160,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full mt-3 right-0 md:left-0 md:right-auto w-[280px] md:w-full bg-bg-surface-active backdrop-blur-xl border border-glass-border rounded-2xl shadow-2xl overflow-hidden p-2 z-[1100]"
+                  className="absolute top-full mt-3 right-0 md:left-0 md:right-auto w-[280px] md:w-full bg-[#030712] sm:bg-bg-surface-active backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden p-2 z-[1500]"
                 >
                   {suggestions.map((item) => (
                     <button
