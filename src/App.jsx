@@ -75,9 +75,14 @@ function App() {
           
         } else if (activeCategory === 'all') {
           const trendingMovies = await getTrending('movie', page);
+          const trendingTv = await getTrending('tv', page);
           const trendingAnime = await getTrendingAnime(page);
-          newItems = [...(trendingMovies || []).slice(0, 10), ...(trendingAnime || []).slice(0, 10)];
-          newTitle = 'Trending Today';
+          newItems = [
+            ...(trendingMovies || []).slice(0, 10), 
+            ...(trendingTv || []).slice(0, 10), 
+            ...(trendingAnime || []).slice(0, 10)
+          ];
+          newTitle = 'Trending Movies, Series & Anime';
           if (page === 1) {
             const firstRealTMDB = trendingMovies.find(item => !String(item.id).startsWith('mock_'));
             newHero = firstRealTMDB || trendingAnime[0] || trendingMovies[0];
