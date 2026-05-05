@@ -8,12 +8,14 @@ BingeWatch is a premium, high-performance web application designed for movie ent
 
 ### 🚀 Advanced Discovery
 - **Real-time Search Suggestions:** Instant feedback as you type with poster previews and ratings.
+- **Infinite Scrolling:** Seamlessly load new pages of movies and anime as you scroll, utilizing `IntersectionObserver` for a native app-like experience.
 - **Smart Genre Filtering:** Dynamic chip-based filtering that adapts to Movies, TV Series, and Anime.
 - **News & Upcoming:** Stay ahead of the curve with the latest releases and trailers.
 
-### 🎟️ Ticketing & Booking
+### 🎟️ Ticketing & Streaming
+- **OTT Availability:** Instantly see where to stream movies and shows (Netflix, Prime, Disney+, Crunchyroll) using real-time JustWatch data.
 - **Partner Integration:** Direct deep-links to major ticketing platforms including **BookMyShow, PVR, Inox, and Cinepolis**.
-- **Smart Booking Logic:** The "Book Ticket" feature intelligently appears only for new and upcoming movies within a valid release window.
+- **Smart Booking Logic:** The "Book Ticket" feature intelligently appears only for new and upcoming movies within a valid 90-day release window.
 
 ### 👤 Personalized Experience
 - **Firebase Authentication:** Secure sign-in via Google, GitHub, Apple, or Email.
@@ -24,6 +26,10 @@ BingeWatch is a premium, high-performance web application designed for movie ent
 - **BingeWatch Aesthetic:** A flat, modern UI with high border-radii, glassmorphic surfaces, and a curated Slate color palette.
 - **Framer Motion Animations:** Fluid transitions, spring-loaded modals, and breathing background effects.
 - **Responsive Layout:** Optimized for everything from mobile phones to ultra-wide monitors.
+
+### ⚡ Engineering & Performance (Portfolio Highlight)
+- **Custom Image Lazy Loading:** Implemented a bespoke `<LazyImage />` component utilizing native Intersection Observers with skeleton blur-up animations to prevent layout shifts and drastically improve Google Lighthouse scores.
+- **Dynamic Content Scaling:** Built custom responsive layouts that elegantly scale typographies and containers based on exact device viewport sizes.
 
 ## 🛠️ Tech Stack
 
