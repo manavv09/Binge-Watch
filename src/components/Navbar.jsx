@@ -117,9 +117,9 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
   return (
     <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[92%] max-w-[1400px] h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-8">
-        <div className="flex items-center gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
+        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
           <img src="/binge-watch-icon.png" alt="BingeWatch" className="h-9 md:h-10 w-9 md:w-10 object-contain rounded-xl ring-1 ring-white/15" />
-          <span className="hidden sm:block font-outfit font-extrabold tracking-tight text-[1.05rem] md:text-[1.15rem] text-text-primary">
+          <span className="font-outfit font-extrabold tracking-tight text-[0.95rem] sm:text-[1.05rem] md:text-[1.15rem] text-text-primary">
             BingeWatch
           </span>
         </div>
@@ -137,19 +137,19 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
           ))}
         </div>
 
-        <div className="flex items-center gap-3 lg:gap-6">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-6">
           {/* Search Bar */}
-          <div className="hidden md:block relative group" ref={searchRef}>
-            <form className="w-[220px] lg:w-[320px]" onSubmit={handleSearchSubmit}>
+          <div className="relative group" ref={searchRef}>
+            <form className="w-[130px] sm:w-[220px] lg:w-[320px]" onSubmit={handleSearchSubmit}>
               <div className="relative flex items-center w-full">
-                <Search className="absolute left-4 text-text-muted transition-colors group-focus-within:text-accent-primary" size={16} />
+                <Search className="absolute left-3 sm:left-4 text-text-muted transition-colors group-focus-within:text-accent-primary" size={16} />
                 <input
                   type="text"
                   placeholder="Search..."
                   value={searchValue}
                   onChange={handleSearchChange}
                   onFocus={() => searchValue && setIsSuggestionsOpen(true)}
-                  className="w-full bg-black/35 border border-glass-border rounded-full py-2.5 pr-4 pl-11 text-text-primary text-[0.85rem] transition-all duration-200 focus:outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-4 focus:ring-accent-primary/10"
+                  className="w-full bg-black/35 border border-glass-border rounded-full py-2 sm:py-2.5 pr-4 pl-9 sm:pl-11 text-text-primary text-[0.8rem] sm:text-[0.85rem] transition-all duration-200 focus:outline-none focus:border-accent-primary focus:bg-black/60 focus:ring-4 focus:ring-accent-primary/10"
                 />
               </div>
             </form>
@@ -160,7 +160,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full mt-3 left-0 w-full bg-bg-surface-active backdrop-blur-xl border border-glass-border rounded-2xl shadow-2xl overflow-hidden p-2 z-[1100]"
+                  className="absolute top-full mt-3 right-0 md:left-0 md:right-auto w-[280px] md:w-full bg-bg-surface-active backdrop-blur-xl border border-glass-border rounded-2xl shadow-2xl overflow-hidden p-2 z-[1100]"
                 >
                   {suggestions.map((item) => (
                     <button
