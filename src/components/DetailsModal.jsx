@@ -189,10 +189,31 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
   let streamingProviders = [];
   let streamingLink = null;
 
+  const getProviderLogo = (name, originalPath) => {
+    if (originalPath && originalPath.startsWith('/')) {
+      return `https://image.tmdb.org/t/p/original${originalPath}`;
+    }
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('netflix')) return 'https://images.justwatch.com/icon/207360008/s100';
+    if (lowerName.includes('prime') || lowerName.includes('amazon')) return 'https://images.justwatch.com/icon/52449861/s100';
+    if (lowerName.includes('hotstar') || lowerName.includes('disney')) return 'https://images.justwatch.com/icon/313118777/s100';
+    if (lowerName.includes('apple')) return 'https://images.justwatch.com/icon/190848813/s100';
+    if (lowerName.includes('jio')) return 'https://images.justwatch.com/icon/138047862/s100';
+    if (lowerName.includes('zee5')) return 'https://images.justwatch.com/icon/93715891/s100';
+    if (lowerName.includes('sonyliv')) return 'https://images.justwatch.com/icon/207436034/s100';
+    if (lowerName.includes('hulu')) return 'https://images.justwatch.com/icon/11714414/s100';
+    if (lowerName.includes('max') || lowerName.includes('hbo')) return 'https://images.justwatch.com/icon/333334547/s100';
+    if (lowerName.includes('crunchyroll')) return 'https://images.justwatch.com/icon/128557227/s100';
+    if (lowerName.includes('youtube')) return 'https://images.justwatch.com/icon/59562412/s100';
+    if (lowerName.includes('google play')) return 'https://images.justwatch.com/icon/169478387/s100';
+    return null;
+  };
+
   if (isAnime && details?.streaming) {
     streamingProviders = details.streaming.map(s => ({
       provider_name: s.name,
-      url: s.url
+      url: s.url,
+      logo_path: getProviderLogo(s.name, null)
     }));
   } else if (details?.['watch/providers']?.results) {
     const results = details['watch/providers'].results;
@@ -234,7 +255,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
           seenNames.add(normalizedName);
           uniqueProviders.push({
             provider_name: normalizedName,
-            logo_path: p.logo_path && p.logo_path.startsWith('/') ? `https://image.tmdb.org/t/p/original${p.logo_path}` : null
+            logo_path: getProviderLogo(normalizedName, p.logo_path)
           });
         }
       });
@@ -280,8 +301,8 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
           <div className="p-4 md:p-8 xl:p-16 max-w-[1400px] mx-auto w-full flex flex-col gap-6 xl:gap-8 -mt-[100px] md:-mt-[120px] xl:-mt-[150px] relative z-10">
             <div className="flex flex-col xl:flex-row gap-6 xl:gap-8 items-center xl:items-start text-center xl:text-left">
               <img src={poster} alt={title} className="w-[160px] md:w-[240px] xl:w-[300px] h-[240px] md:h-[360px] xl:h-[450px] rounded-xl object-cover shadow-volumetric border border-glass-border shrink-0 -mt-[40px] md:-mt-[60px] xl:mt-0" />
-              <div className="grow w-full max-w-full">
-                <h2 className="text-[2rem] sm:text-4xl md:text-[3rem] lg:text-[3.5rem] xl:text-[4.5rem] mb-2 leading-[1.1] text-text-primary drop-shadow-md font-bold break-words">{title}</h2>
+              <div className="grow w-full max-w-[100%] min-w-0">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl xl:text-5xl 2xl:text-6xl mb-5 leading-snug text-text-primary drop-shadow-md font-bold break-words">{title}</h2>
                 <div className="flex flex-wrap items-center justify-center xl:justify-start gap-3 xl:gap-4 mb-6 text-[0.85rem] md:text-[0.95rem]">
                   <span className="flex items-center gap-1 text-text-primary font-bold">
                     <Star size={16} fill="var(--warning)" color="var(--warning)" />

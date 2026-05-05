@@ -114,10 +114,15 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
   const displayName = currentUser?.displayName || currentUser?.email || 'User';
   const avatarFallback = displayName.trim().charAt(0).toUpperCase();
 
+  const handleNavClick = (id) => {
+    setActiveCategory(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <nav className={`fixed top-[0.75rem] md:top-[1.2rem] left-[50%] -translate-x-1/2 w-[94%] md:w-[96%] xl:w-[92%] max-w-[1400px] h-[60px] md:h-[64px] lg:h-[68px] z-[1000] rounded-full border border-transparent flex items-center transition-all duration-300 ${isScrolled ? 'glass-panel !border-glass-border shadow-[0_10px_30px_rgba(2,6,23,0.45)]' : 'bg-transparent'}`}>
       <div className="flex items-center justify-between h-full w-full max-w-container mx-auto px-4 md:px-5 lg:px-8">
-        <div className="flex items-center gap-2 lg:gap-3 cursor-pointer no-underline shrink-0" onClick={() => setActiveCategory('all')}>
+        <div className="flex items-center gap-2 lg:gap-3 cursor-pointer no-underline shrink-0" onClick={() => handleNavClick('all')}>
           <img src="/binge-watch-icon.png" alt="BingeWatch" className="h-9 w-9 md:h-8 md:w-8 lg:h-10 lg:w-10 object-contain rounded-xl ring-1 ring-white/15" />
           <span className="font-outfit font-extrabold tracking-tight text-[0.95rem] md:text-[0.95rem] lg:text-[1.15rem] text-text-primary">
             BingeWatch
@@ -130,7 +135,7 @@ const Navbar = ({ activeCategory, setActiveCategory, onSearch, currentUser, onOp
             <button
               key={item.id}
               className={`text-[0.85rem] lg:text-[0.95rem] font-medium transition-all duration-150 py-2 relative inline-block group hover:text-text-primary hover:-translate-y-0.5 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-accent-primary after:transition-all after:duration-150 after:rounded-sm after:w-0 group-hover:after:w-full ${activeCategory === item.id ? 'text-text-primary -translate-y-0.5 after:!w-full drop-shadow-[0_0_8px_var(--accent-glow)]' : 'text-text-secondary'}`}
-              onClick={() => setActiveCategory(item.id)}
+              onClick={() => handleNavClick(item.id)}
             >
               {item.label}
             </button>

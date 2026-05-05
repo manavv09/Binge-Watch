@@ -27,8 +27,12 @@ export default function MobileBottomNav({ activeCategory, setActiveCategory, cur
                   isActive ? 'bg-white/5 text-accent-primary' : 'text-text-muted hover:text-text-primary hover:bg-white/5'
                 }`}
                 onClick={() => {
-                  if (item.id === 'auth') onOpenAuth();
-                  else setActiveCategory(item.id);
+                  if (item.id === 'auth') {
+                    onOpenAuth();
+                  } else {
+                    setActiveCategory(item.id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
                 }}
                 title={item.label}
               >
