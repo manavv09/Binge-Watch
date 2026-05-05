@@ -273,16 +273,16 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
             </button>
           </div>
 
-          <div className="w-full h-[50vh] min-h-[400px] bg-cover bg-center relative shrink-0" style={{ backgroundImage: `url(${backdrop})` }}>
+          <div className="w-full h-[40vh] min-h-[300px] md:h-[50vh] md:min-h-[400px] bg-cover bg-center relative shrink-0" style={{ backgroundImage: `url(${backdrop})` }}>
             <div className="absolute inset-0 bg-gradient-to-t from-bg-surface to-transparent" />
           </div>
 
-          <div className="p-4 md:p-16 max-w-[1400px] mx-auto w-full flex flex-col gap-8 -mt-[150px] relative z-10">
-            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
-              <img src={poster} alt={title} className="w-[200px] md:w-[300px] h-[300px] md:h-[450px] rounded-xl object-cover shadow-volumetric border border-glass-border shrink-0 -mt-[150px] md:mt-0" />
-              <div className="grow">
-                <h2 className="text-[clamp(3rem,5vw,4.5rem)] mb-2 leading-[1.1] text-text-primary drop-shadow-md font-bold">{title}</h2>
-                <div className="flex items-center justify-center md:justify-start gap-4 mb-6 text-[0.95rem]">
+          <div className="p-4 md:p-8 xl:p-16 max-w-[1400px] mx-auto w-full flex flex-col gap-6 xl:gap-8 -mt-[100px] md:-mt-[120px] xl:-mt-[150px] relative z-10">
+            <div className="flex flex-col xl:flex-row gap-6 xl:gap-8 items-center xl:items-start text-center xl:text-left">
+              <img src={poster} alt={title} className="w-[160px] md:w-[240px] xl:w-[300px] h-[240px] md:h-[360px] xl:h-[450px] rounded-xl object-cover shadow-volumetric border border-glass-border shrink-0 -mt-[40px] md:-mt-[60px] xl:mt-0" />
+              <div className="grow w-full max-w-full">
+                <h2 className="text-[2rem] sm:text-4xl md:text-[3rem] lg:text-[3.5rem] xl:text-[4.5rem] mb-2 leading-[1.1] text-text-primary drop-shadow-md font-bold break-words">{title}</h2>
+                <div className="flex flex-wrap items-center justify-center xl:justify-start gap-3 xl:gap-4 mb-6 text-[0.85rem] md:text-[0.95rem]">
                   <span className="flex items-center gap-1 text-text-primary font-bold">
                     <Star size={16} fill="var(--warning)" color="var(--warning)" />
                     {details?.vote_average ? Number(details.vote_average).toFixed(1) : (details?.score || 'N/A')}
@@ -371,7 +371,7 @@ const DetailsModal = ({ item, onClose, currentUser, onRequireAuth }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-8 border-t border-glass-border pt-8">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_2fr] gap-8 border-t border-glass-border pt-8">
               <div>
                 <h3 className="mb-4 flex items-center gap-2 font-bold text-[1.2rem] text-text-primary">Rate this</h3>
                 <div className="flex flex-col gap-1">
