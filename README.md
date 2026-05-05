@@ -1,44 +1,68 @@
-# 🎬 BingeWatch — Ultimate Media Hub
+<div align="center">
+  <img src="./public/binge-watch-icon.png" alt="BingeWatch Logo" width="100" />
 
-BingeWatch is a premium, high-performance web application designed for movie enthusiasts, anime fans, and binge-watchers. It provides a sleek, minimalist "BingeWatch" aesthetic with a deep-slate glassmorphic UI, real-time data fetching, and seamless external integrations.
+  # 🎬 BingeWatch — Ultimate Media Hub
+
+  **A premium, high-performance web application designed for movie enthusiasts, anime fans, and binge-watchers.**
+
+  [![React](https://img.shields.io/badge/React-19-blue.svg?style=for-the-badge&logo=react)](https://react.dev/)
+  [![Vite](https://img.shields.io/badge/Vite-5.0-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.0-38B2AC.svg?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+  [![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28.svg?style=for-the-badge&logo=firebase)](https://firebase.google.com/)
+  [![Framer Motion](https://img.shields.io/badge/Framer-Motion-black.svg?style=for-the-badge&logo=framer)](https://www.framer.com/motion/)
+</div>
+
+<br />
 
 ![Hero Showcase](https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop)
 
+BingeWatch is a front-end masterpiece built to demonstrate senior-level React architecture. It features a sleek, minimalist "tech dashboard" aesthetic with a deep-slate glassmorphic UI, real-time data fetching from multiple REST APIs, and hardware-accelerated animations.
+
+---
+
 ## ✨ Key Features
 
-### 🚀 Advanced Discovery
+### 🚀 Advanced Discovery & UI
+- **Dynamic Hero Carousel:** An auto-playing, GPU-accelerated carousel showcasing the top 10 trending movies, series, and anime.
 - **Real-time Search Suggestions:** Instant feedback as you type with poster previews and ratings.
-- **Infinite Scrolling:** Seamlessly load new pages of movies and anime as you scroll, utilizing `IntersectionObserver` for a native app-like experience.
-- **Smart Genre Filtering:** Dynamic chip-based filtering that adapts to Movies, TV Series, and Anime.
-- **News & Upcoming:** Stay ahead of the curve with the latest releases and trailers.
+- **Smart Genre Filtering:** Dynamic chip-based filtering that adapts to Movies, TV Series, and Anime seamlessly.
+- **News & Upcoming:** Stay ahead of the curve with the latest global releases and high-definition trailers.
 
-### 🎟️ Ticketing & Streaming
-- **OTT Availability:** Instantly see where to stream movies and shows (Netflix, Prime, Disney+, Crunchyroll) using real-time JustWatch data.
+### 🎟️ Ticketing & Streaming Integration
+- **OTT Availability:** Instantly see where to stream titles (Netflix, Prime Video, Disney+, Crunchyroll) using real-time JustWatch data.
 - **Partner Integration:** Direct deep-links to major ticketing platforms including **BookMyShow, PVR, Inox, and Cinepolis**.
 - **Smart Booking Logic:** The "Book Ticket" feature intelligently appears only for new and upcoming movies within a valid 90-day release window.
 
 ### 👤 Personalized Experience
-- **Firebase Authentication:** Secure sign-in via Google, GitHub, Apple, or Email.
-- **Cloud Watchlist:** Save your favorite titles to your personal list (synchronized via Firestore).
-- **Interactive Ratings:** Rate titles and leave comments to share your thoughts.
+- **Firebase Authentication:** Secure, robust sign-in via Google, GitHub, Apple, or Email.
+- **Cloud Watchlist:** Save your favorite titles to your personal list (synchronized instantly via Firestore).
+- **Interactive Ratings:** Rate titles and leave comments to share your thoughts with the community.
 
-### 💎 Premium Design
-- **BingeWatch Aesthetic:** A flat, modern UI with high border-radii, glassmorphic surfaces, and a curated Slate color palette.
-- **Framer Motion Animations:** Fluid transitions, spring-loaded modals, and breathing background effects.
-- **Responsive Layout:** Optimized for everything from mobile phones to ultra-wide monitors.
+---
 
-### ⚡ Engineering & Performance (Portfolio Highlight)
-- **Custom Image Lazy Loading:** Implemented a bespoke `<LazyImage />` component utilizing native Intersection Observers with skeleton blur-up animations to prevent layout shifts and drastically improve Google Lighthouse scores.
-- **Dynamic Content Scaling:** Built custom responsive layouts that elegantly scale typographies and containers based on exact device viewport sizes.
+## ⚡ Engineering & Performance (Portfolio Highlights)
+
+This project was engineered with a strict focus on performance, scalability, and edge-case handling:
+
+- **Custom Image Lazy Loading:** Implemented a bespoke `<LazyImage />` component utilizing native `IntersectionObserver` with skeleton blur-up animations to prevent layout shifts and drastically improve Google Lighthouse scores.
+- **Infinite Scrolling:** Seamlessly load new pages of movies and anime as you scroll down, utilizing zero-dependency Intersection Observers for a native app-like experience.
+- **Algorithmic Color Extraction:** Integrates `fast-average-color` to asynchronously analyze movie posters and dynamically change the application's entire global CSS accent colors (buttons, glows, borders) in real-time without blocking the main thread.
+- **CORS Cache-Busting:** Custom JavaScript logic to bypass browser cache-poisoning when fetching cross-origin images for canvas pixel manipulation.
+- **Dynamic Content Scaling:** Built custom responsive layouts that elegantly scale typographies, line-heights, and flex containers based on exact device viewport sizes (from 320px mobile to ultra-wide monitors).
+- **Hardware Acceleration:** Strategic use of `will-change: transform, opacity` and `AnimatePresence` to offload heavy cross-fade rendering to the GPU, guaranteeing 60fps animations.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** [React 19](https://react.dev/), [Vite](https://vitejs.dev/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Animations:** [Framer Motion](https://www.framer.com/motion/)
-- **Icons:** [Lucide React](https://lucide.dev/)
-- **Backend/Auth:** [Firebase](https://firebase.google.com/) (Auth, Firestore)
-- **Data Source:** [TMDB API](https://www.themoviedb.org/documentation/api) & [Jikan API](https://jikan.moe/)
+- **Frontend Core:** React 19, Vite
+- **Styling:** Tailwind CSS (Custom Design System)
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Backend/Auth:** Google Firebase (Authentication, Cloud Firestore)
+- **Data Sources:** TMDB API (Movies/TV) & Jikan API (Anime)
+
+---
 
 ## 🚀 Getting Started
 
@@ -70,18 +94,7 @@ VITE_FIREBASE_APP_ID=your_app_id
 npm run dev
 ```
 
-## Deploy on Vercel
-
-This project is configured for SPA routing on Vercel using `vercel.json`.
-
-1. Push your code to GitHub.
-2. Import the repository in [Vercel](https://vercel.com/new).
-3. Add the same environment variables from your local `.env` file in Vercel Project Settings.
-4. Deploy.
-
-Vercel will automatically use:
-- Build command: `npm run build`
-- Output directory: `dist`
+---
 
 ## 📸 Screenshots
 
@@ -99,11 +112,13 @@ Vercel will automatically use:
 
 ## 📱 Mobile UI Experience
 
-BingeWatch is fully responsive and provides an app-like experience on mobile devices with a custom bottom navigation bar, touch-friendly swiping carousels, and optimized search integration.
+BingeWatch is fully responsive and provides an app-like experience on mobile devices with a custom bottom navigation bar, touch-friendly swiping carousels, and an optimized mobile search flow.
 
 | Mobile Home | Mobile Search |
 | :---: | :---: |
 | ![Mobile Home](./screenshots/mobile-home.png) | ![Mobile Search](./screenshots/mobile-search.png) |
 
 ---
-Developed with ❤️ by [Manav R.Bharti](https://github.com/manavv09)
+<div align="center">
+  <b>Developed with ❤️ by <a href="https://github.com/manavv09">Manav R.Bharti</a></b>
+</div>
